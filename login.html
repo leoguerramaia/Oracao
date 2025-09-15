@@ -54,7 +54,7 @@
         return;
       }
 
-      // Verifica na lista de cadastros
+      // Busca usuário na lista
       const user = cadastros.find(u => (u.email || "").toLowerCase() === emailInput);
 
       if(!user){
@@ -67,14 +67,14 @@
         return;
       }
 
-      // Se for leoguerramaia@gmail.com -> admin
-      if(user.email.toLowerCase() === "leoguerramaia@gmail.com"){
+      // Regras especiais -> admin.html
+      if(user.email.toLowerCase() === "leoguerramaia@gmail.com" || user.email.toLowerCase() === "admin@admin.com.br"){
         alert("✅ Login como administrador realizado!");
         window.location.href = "admin.html";
         return;
       }
 
-      // Usuário normal -> salva como logado e vai para usuariologado.html
+      // Usuário comum -> usuariologado.html
       localStorage.setItem("usuarioLogado", JSON.stringify(user));
       alert("✅ Login realizado com sucesso!");
       window.location.href = "usuariologado.html";
