@@ -94,7 +94,7 @@
   </main>
 
   <script>
-    // Garante que o admin fixo sempre exista
+    // Garante admin fixo
     function garantirAdmin(){
       let cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
       const existeAdmin = cadastros.some(u => u.email === "admin");
@@ -135,7 +135,7 @@
       }
     }
 
-    // Link WhatsApp
+    // WhatsApp link preview
     document.getElementById("telefone").addEventListener("input", () => {
       const tel = document.getElementById("telefone").value.replace(/\D/g,'');
       const whatsDiv = document.getElementById("whatsLink");
@@ -146,20 +146,22 @@
       }
     });
 
-    // Preview Maps
+    // Maps preview
     function previewMaps(){
       const url = document.getElementById("maps").value.trim();
       const div = document.getElementById("mapsPreview");
       div.innerHTML = url ? `🌍 <a href="${url}" target="_blank">Visualizar localização</a>` : "";
     }
 
-    // Salvar cadastro normal
+    // Cadastro
     document.getElementById("formCadastro").addEventListener("submit", function(e){
       e.preventDefault();
 
       const senha = document.getElementById("senha").value;
       const confirma = document.getElementById("confirmaSenha").value;
       if(senha !== confirma){ alert("❌ As senhas não coincidem!"); return; }
+
+      let cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
 
       const novoCadastro = {
         nome: document.getElementById("nome").value.trim(),
@@ -177,28 +179,14 @@
         senha: senha
       };
 
-      let cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
-      cadastros.push(novoCadastro);
-
-      // Garante admin no array
-      if(!cadastros.some(u => u.email === "admin")){
-        cadastros.push({
-          nome: "Administrador",
-          sexo: "MASCULINO",
-          telefone: "",
-          email: "admin",
-          cep: "",
-          rua: "",
-          bairro: "",
-          numero: "",
-          complemento: "",
-          referencia: "",
-          visita: "NÃO",
-          maps: "",
-          senha: "pedidodeoracao",
-          fixo: true
-        });
+      // 🚨 Verifica e-mail duplicado
+      const existe = cadastros.some(u => u.email.toLowerCase() === novoCadastro.email.toLowerCase());
+      if(existe){
+        alert("❌ Já existe um cadastro com este e-mail. Por favor, utilize outro.");
+        return;
       }
+
+      cadastros.push(novoCadastro);
 
       localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
 
