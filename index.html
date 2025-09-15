@@ -2,105 +2,132 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Pedidos de Oração - Início</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedidos de Oração</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
-      text-align: center;
-      background-color: #f4f4f4;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f0f9f4, #dbece0);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
+
     header {
-      background-color: #2c3e50;
+      text-align: center;
+      background: #4CAF50;
       color: white;
-      padding: 16px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-      box-shadow: 0 2px 10px rgba(0,0,0,.15);
-    }
-    header h1 {
-      margin: 0;
-      font-size: 22px;
-    }
-    .top-buttons {
-      position: absolute;
-      right: 16px;
-      display: flex;
-      gap: 10px;
-    }
-    .top-buttons button {
-      background: transparent;
-      border: none;
-      color: white;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      padding: 6px 10px;
-      border-radius: 6px;
-      transition: background 0.3s;
-    }
-    .top-buttons button:hover {
-      background: rgba(255,255,255,0.15);
-    }
-    .container {
-      margin: 40px auto;
-      max-width: 700px;
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    .container img {
-      max-width: 200px;
-      margin-bottom: 20px;
-    }
-    .container p {
-      font-size: 18px;
-      margin-bottom: 30px;
-    }
-    button {
-      display: block;
-      width: 80%;
-      margin: 15px auto;
       padding: 15px;
-      font-size: 16px;
+      font-size: 1.7rem;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    header span {
+      margin-left: 8px;
+      font-size: 1.8rem;
+    }
+
+    /* Área Logada */
+    .area-logada {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      background: #e8f5e9;
+      padding: 10px 20px;
+    }
+
+    .area-logada button {
+      margin-left: 10px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      background: #4CAF50;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .area-logada button:hover {
+      background: #388E3C;
+    }
+
+    /* Área Visitante */
+    .area-visitante {
+      text-align: center;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 15px;
+    }
+
+    .area-visitante img {
+      max-width: 500px;
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      margin-bottom: 25px;
+    }
+
+    .area-visitante button {
+      display: block;
+      width: 280px;
+      max-width: 90%;
+      margin: 10px auto;
+      padding: 14px;
       border: none;
       border-radius: 8px;
+      background: #2196F3;
+      color: white;
+      font-size: 1rem;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: 0.3s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
-    .btn-pedido { background: #27ae60; color: white; }
-    .btn-pedido:hover { background: #219150; }
-    .btn-consulta { background: #8e44ad; color: white; }
-    .btn-consulta:hover { background: #732d91; }
+
+    .area-visitante button:hover {
+      background: #1976D2;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      header {
+        font-size: 1.3rem;
+      }
+
+      .area-logada button {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+      }
+
+      .area-visitante button {
+        font-size: 0.9rem;
+        padding: 12px;
+      }
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>🙏 Pedidos de Oração</h1>
-    <div class="top-buttons">
-      <button onclick="location.href='cadastro.html'">📝 Cadastre-se</button>
-      <button onclick="location.href='login.html'">🔑 Login</button>
-    </div>
+    Pedidos de Oração <span>🙏</span>
   </header>
 
-  <div class="container">
-    <img src="https://cdn-icons-png.flaticon.com/512/1995/1995574.png" alt="Menina com Bíblia">
-    <p>
-      Seja Bem Vindo(a) ao <strong>Pedido de Oração</strong>! <br><br>
-      Nesse espaço você poderá registrar seus pedidos de oração 
-      e também consultar os pedidos que você já realizou anteriormente.
-    </p>
+  <!-- Área Logada -->
+  <div class="area-logada">
+    <button onclick="window.location.href='cadastro.html'">Cadastre-se</button>
+    <button onclick="window.location.href='login.html'">Login</button>
+  </div>
 
-    <button class="btn-pedido" onclick="location.href='usuario.html'">✍️ Fazer Pedido de Oração</button>
-    <button class="btn-consulta" onclick="location.href='consultar.html'">🔍 Consultar Pedidos de Oração</button>
+  <!-- Área Visitante -->
+  <div class="area-visitante">
+    <img src="Grupo Orando.jpg" alt="Grupo orando de mãos dadas">
+    <button onclick="window.location.href='usuario.html'">Fazer Pedido de Oração</button>
+    <button onclick="window.location.href='consulta.html'">Consultar Pedidos de Oração</button>
   </div>
 </body>
 </html>
