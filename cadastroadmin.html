@@ -6,10 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body{font-family:Arial,sans-serif;background:#f4f6f8;margin:0}
-    header{background:#2c3e50;color:#fff;padding:20px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+    header{background:#2c3e50;color:#fff;padding:20px;text-align:center;
+      display:flex;justify-content:space-between;align-items:center;
+      box-shadow:0 2px 10px rgba(0,0,0,.15)}
+    header h1{margin:0;font-size:22px}
     .container{max-width:900px;margin:40px auto;background:#fff;padding:24px;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.1)}
     h2{margin-top:0}
-    .lista-nomes{margin-bottom:20px}
     .lista-nomes button{display:block;width:100%;text-align:left;padding:10px;border:none;border-radius:6px;margin:4px 0;background:#ecf0f1;cursor:pointer;font-weight:bold}
     .lista-nomes button:hover{background:#dcdde1}
     .cadastro{border:1px solid #ddd;padding:12px;margin-bottom:12px;border-radius:8px}
@@ -33,6 +35,7 @@
   <header>
     <h1>📋 Administração de Cadastros</h1>
   </header>
+
   <div class="container">
     <h2>Lista de Usuários</h2>
     <div class="lista-nomes" id="listaNomes"></div>
@@ -43,16 +46,20 @@
   <script>
     let cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
 
+    console.log("🔎 Cadastros carregados do localStorage:", cadastros);
+
     function carregarNomes(){
       const lista = document.getElementById("listaNomes");
       lista.innerHTML = "";
+
       if(cadastros.length === 0){
         lista.innerHTML = "<p>Nenhum cadastro encontrado.</p>";
         return;
       }
+
       cadastros.forEach((c, i)=>{
         const btn = document.createElement("button");
-        btn.textContent = c.nome + " (" + c.email + ")";
+        btn.textContent = (c.nome || "Sem Nome") + " (" + (c.email || "sem email") + ")";
         btn.onclick = ()=>mostrarDetalhes(i);
         lista.appendChild(btn);
       });
@@ -60,82 +67,28 @@
 
     function mostrarDetalhes(index){
       const c = cadastros[index];
+      console.log("👤 Exibindo detalhes do usuário:", c);
+
       const div = document.getElementById("detalhes");
       div.innerHTML = `
         <div class="cadastro">
-          <h3>${c.nome}</h3>
-          
-          <label>Sexo:</label>
-          <div class="radios">
-            <label class="radio-option"><input type="radio" name="sexo${index}" value="MASCULINO" ${c.sexo==="MASCULINO"?"checked":""}> MASCULINO</label>
-            <label class="radio-option"><input type="radio" name="sexo${index}" value="FEMININO" ${c.sexo==="FEMININO"?"checked":""}> FEMININO</label>
-          </div>
-
-          <label>Telefone:</label>
-          <input type="text" id="telefone${index}" value="${c.telefone}">
-          <p>📱 <a href="https://wa.me/55${c.telefone.replace(/\D/g,'')}" target="_blank">WhatsApp direto</a></p>
-
-          <label>Email:</label>
-          <input type="text" id="email${index}" value="${c.email}">
-
-          <label>CEP:</label>
-          <input type="text" id="cep${index}" value="${c.cep}">
-          <label>Rua:</label>
-          <input type="text" id="rua${index}" value="${c.rua}">
-          <label>Bairro:</label>
-          <input type="text" id="bairro${index}" value="${c.bairro}">
-          <label>Número:</label>
-          <input type="text" id="numero${index}" value="${c.numero}">
-          <label>Complemento:</label>
-          <input type="text" id="complemento${index}" value="${c.complemento}">
-          <label>Referência:</label>
-          <input type="text" id="referencia${index}" value="${c.referencia}">
-          <label>Aceita Visita:</label>
-          <input type="text" id="visita${index}" value="${c.visita}">
-          <label>Google Maps:</label>
-          <input type="text" id="maps${index}" value="${c.maps}">
-
-          <p><strong>Senha:</strong> 🔒 Oculta</p>
-          <button class="btn btn-reset" onclick="resetarSenha(${index})">🔄 Resetar Senha</button>
-          <button class="btn btn-save" onclick="salvarEdicao(${index})">💾 Salvar Alterações</button>
-          <button class="btn btn-delete" onclick="excluirUsuario(${index})">🗑️ Excluir Usuário</button>
+          <h3>${c.nome || "Sem Nome"}</h3>
+          <p><strong>Email:</strong> ${c.email || "Sem Email"}</p>
+          <p><strong>Sexo:</strong> ${c.sexo || "Não informado"}</p>
+          <p><strong>Telefone:</strong> ${c.telefone || "Sem telefone"}</p>
+          <p><strong>CEP:</strong> ${c.cep || ""}</p>
+          <p><strong>Rua:</strong> ${c.rua || ""}</p>
+          <p><strong>Bairro:</strong> ${c.bairro || ""}</p>
+          <p><strong>Número:</strong> ${c.numero || ""}</p>
+          <p><strong>Complemento:</strong> ${c.complemento || ""}</p>
+          <p><strong>Referência:</strong> ${c.referencia || ""}</p>
+          <p><strong>Aceita Visita:</strong> ${c.visita || ""}</p>
+          <p><strong>Google Maps:</strong> <a href="${c.maps || "#"}" target="_blank">${c.maps || "Não informado"}</a></p>
         </div>
       `;
     }
 
-    function salvarEdicao(index){
-      const novoEmail = document.getElementById("email"+index).value.trim().toLowerCase();
-      const existe = cadastros.some((u, i) => i !== index && (u.email || "").toLowerCase() === novoEmail);
-
-      if(existe){
-        alert("❌ Já existe um usuário com este e-mail. Escolha outro.");
-        return;
-      }
-
-      cadastros[index] = {
-        ...cadastros[index],
-        sexo: document.querySelector(`input[name="sexo${index}"]:checked`)?.value,
-        telefone: document.getElementById("telefone"+index).value,
-        email: novoEmail,
-        cep: document.getElementById("cep"+index).value,
-        rua: document.getElementById("rua"+index).value,
-        bairro: document.getElementById("bairro"+index).value,
-        numero: document.getElementById("numero"+index).value,
-        complemento: document.getElementById("complemento"+index).value,
-        referencia: document.getElementById("referencia"+index).value,
-        visita: document.getElementById("visita"+index).value,
-        maps: document.getElementById("maps"+index).value
-      };
-      localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
-      alert("✅ Cadastro atualizadoAqui estão os dois prompts completos com a validação de **e-mail duplicado** aplicada tanto no **cadastro.html** quanto no **cadastroadmin.html**:  
-
----
-
-# 🔹 1. `cadastro.html` (não permite cadastrar com e-mail já existente)
-
-✔️ Adicionada a checagem antes de salvar o cadastro.  
-
-[clique para expandir o código completo]  
-
-```html
-... (código completo do cadastro.html mostrado acima) ...
+    carregarNomes();
+  </script>
+</body>
+</html>
