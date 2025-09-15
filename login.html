@@ -50,7 +50,6 @@
         }
         const adminUser = { nome:"Administrador", email:"admin", sexo:"MASCULINO" };
         localStorage.setItem("usuarioLogado", JSON.stringify(adminUser));
-        alert("✅ Login como ADMIN realizado!");
         window.location.href = "admin.html";
         return;
       }
@@ -60,19 +59,17 @@
       if(!user){ alert("❌ Usuário não encontrado."); return; }
       if(user.senha !== senha){ alert("❌ Senha incorreta."); return; }
 
-      // Sempre salva o usuário logado (inclusive administradores por e-mail especial)
+      // Salva sempre o usuário logado
       localStorage.setItem("usuarioLogado", JSON.stringify(user));
 
       // Regras especiais → admin.html
       const emailLower = (user.email || "").toLowerCase();
       if(emailLower === "leoguerramaia@gmail.com" || emailLower === "admin@admin.com.br"){
-        alert("✅ Login como administrador realizado!");
         window.location.href = "admin.html";
         return;
       }
 
       // Usuário comum → usuariologado.html
-      alert("✅ Login realizado com sucesso!");
       window.location.href = "usuariologado.html";
     });
   </script>
