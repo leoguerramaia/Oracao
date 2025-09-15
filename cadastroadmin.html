@@ -15,6 +15,8 @@
     .cadastro{border:1px solid #ddd;padding:12px;margin-bottom:12px;border-radius:8px}
     label{display:block;margin:8px 0 4px;font-weight:bold}
     input{width:100%;padding:8px;border:1px solid #ccc;border-radius:6px}
+    .radios{display:flex;gap:20px;margin:8px 0}
+    .radio-option{display:flex;align-items:center;gap:6px}
     .btn{margin-top:8px;padding:10px 14px;border:none;border-radius:6px;font-weight:bold;cursor:pointer}
     .btn-save{background:#27ae60;color:#fff}
     .btn-save:hover{background:#219150}
@@ -47,6 +49,9 @@
         return;
       }
       cadastros.forEach((c, i)=>{
+        if(c.email === "admin" || c.email.toLowerCase() === "leoguerramaia@gmail.com" || c.email.toLowerCase() === "admin@admin.com.br"){
+          return; // não mostrar usuários especiais
+        }
         const btn = document.createElement("button");
         btn.textContent = c.nome;
         btn.onclick = ()=>mostrarDetalhes(i);
@@ -60,6 +65,13 @@
       div.innerHTML = `
         <div class="cadastro">
           <h3>${c.nome}</h3>
+          
+          <label>Sexo:</label>
+          <div class="radios">
+            <label class="radio-option"><input type="radio" name="sexo${index}" value="MASCULINO" ${c.sexo==="MASCULINO"?"checked":""}> MASCULINO</label>
+            <label class="radio-option"><input type="radio" name="sexo${index}" value="FEMININO" ${c.sexo==="FEMININO"?"checked":""}> FEMININO</label>
+          </div>
+
           <label>Telefone:</label>
           <input type="text" id="telefone${index}" value="${c.telefone}">
           <p>📱 <a href="https://wa.me/55${c.telefone.replace(/\D/g,'')}" target="_blank">WhatsApp direto</a></p>
@@ -83,10 +95,11 @@
           <input type="text" id="visita${index}" value="${c.visita}">
           <label>Google Maps:</label>
           <input type="text" id="maps${index}" value="${c.maps}">
-          <label>Senha:</label>
-          <input type="text" id="senha${index}" value="${c.senha}">
-          <button class="btn btn-save" onclick="salvarEdicao(${index})">💾 Salvar Alterações</button>
+
+          <p><strong>Senha:</strong> 🔒 Oculta</p>
           <button class="btn btn-reset" onclick="resetarSenha(${index})">🔄 Resetar Senha</button>
+
+          <button class="btn btn-save" onclick="salvarEdicao(${index})">💾 Salvar Alterações</button>
         </div>
       `;
     }
@@ -94,6 +107,7 @@
     function salvarEdicao(index){
       cadastros[index] = {
         ...cadastros[index],
+        sexo: document.querySelector(`input[name="sexo${index}"]:checked`)?.value,
         telefone: document.getElementById("telefone"+index).value,
         email: document.getElementById("email"+index).value,
         cep: document.getElementById("cep"+index).value,
@@ -103,8 +117,7 @@
         complemento: document.getElementById("complemento"+index).value,
         referencia: document.getElementById("referencia"+index).value,
         visita: document.getElementById("visita"+index).value,
-        maps: document.getElementById("maps"+index).value,
-        senha: document.getElementById("senha"+index).value
+        maps: document.getElementById("maps"+index).value
       };
       localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
       alert("✅ Cadastro atualizado com sucesso!");
