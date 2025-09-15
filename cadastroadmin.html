@@ -22,6 +22,8 @@
     .btn-save:hover{background:#219150}
     .btn-reset{background:#e74c3c;color:#fff}
     .btn-reset:hover{background:#c0392b}
+    .btn-delete{background:#c0392b;color:#fff}
+    .btn-delete:hover{background:#962d22}
     .btn-home{margin-top:16px;width:100%;background:#fff;color:#2c3e50;border:1px solid #ccc}
     .btn-home:hover{background:#f7f9fb}
     a{color:#27ae60;text-decoration:none}
@@ -98,8 +100,8 @@
 
           <p><strong>Senha:</strong> 🔒 Oculta</p>
           <button class="btn btn-reset" onclick="resetarSenha(${index})">🔄 Resetar Senha</button>
-
           <button class="btn btn-save" onclick="salvarEdicao(${index})">💾 Salvar Alterações</button>
+          <button class="btn btn-delete" onclick="excluirUsuario(${index})">🗑️ Excluir Usuário</button>
         </div>
       `;
     }
@@ -129,6 +131,16 @@
       localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
       alert("🔄 Senha resetada para 12345678. O usuário deve alterá-la no próximo login.");
       mostrarDetalhes(index);
+    }
+
+    function excluirUsuario(index){
+      if(confirm("❌ Tem certeza que deseja excluir este usuário?")){
+        cadastros.splice(index, 1);
+        localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
+        alert("🗑️ Usuário excluído com sucesso!");
+        document.getElementById("detalhes").innerHTML = "";
+        carregarNomes();
+      }
     }
 
     carregarNomes();
