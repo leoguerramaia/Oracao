@@ -25,8 +25,8 @@
   <div class="container">
     <h2>Entre na sua conta</h2>
     <form id="loginForm">
-      <label for="email">E-mail:</label>
-      <input type="email" id="email" required />
+      <label for="email">E-mail ou Usuário:</label>
+      <input type="text" id="email" required />
       <label for="senha">Senha:</label>
       <input type="password" id="senha" required />
       <button type="submit">Entrar</button>
@@ -35,70 +35,49 @@
   </div>
 
   <script>
-    // Busca usuário por email nos dois formatos de armazenamento:
-    // - 'cadastrosUsuarios' (array com vários)
-    // - 'cadastroUsuario' (objeto único, legado)
-    function obterUsuarioPorEmail(email){
-      const lista = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
-      if(Array.isArray(lista) && lista.length){
-        const encontrado = lista.find(u => (u.email || "").toLowerCase() === email.toLowerCase());
-        if(encontrado) return { tipo: "lista", usuario: encontrado, lista };
-      }
-      const unico = JSON.parse(localStorage.getItem("cadastroUsuario"));
-      if(unico && (unico.email || "").toLowerCase() === email.toLowerCase()){
-        return { tipo: "unico", usuario: unico };
-      }
-      return null;
-    }
-
-    function salvarUsuarioAtualizado(contexto, usuarioAtualizado){
-      if(contexto.tipo === "lista"){
-        const lista = contexto.lista.map(u =>
-          (u.email||"").toLowerCase() === (usuarioAtualizado.email||"").toLowerCase() ? usuarioAtualizado : u
-        );
-        localStorage.setItem("cadastrosUsuarios", JSON.stringify(lista));
-      } else {
-        localStorage.setItem("cadastroUsuario", JSON.stringify(usuarioAtualizado));
-      }
-    }
-
     document.getElementById("loginForm").addEventListener("submit", function(e){
       e.preventDefault();
 
-      const email = document.getElementById("email").value.trim();
+      const emailInput = document.getElementById("email").value.trim().toLowerCase();
       const senha = document.getElementById("senha").value;
 
-      const contexto = obterUsuarioPorEmail(email);
-      if(!contexto){
-        alert("❌ E-mail não encontrado.");
+      let cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
+
+      // Admin fixo
+      if(emailInput === "admin"){
+        if(senha === "pedidodeoracao"){
+          alert("✅ Login como ADMIN realizado!");
+          window.location.href = "admin.html";
+        } else {
+          alert("❌ Senha incorreta para admin.");
+        }
         return;
       }
 
-      const user = contexto.usuario;
+      // Verifica na lista de cadastros
+      const user = cadastros.find(u => (u.email || "").toLowerCase() === emailInput);
+
+      if(!user){
+        alert("❌ Usuário não encontrado.");
+        return;
+      }
+
       if(user.senha !== senha){
         alert("❌ Senha incorreta.");
         return;
       }
 
-      // Enforce troca de senha caso admin tenha marcado resetObrigatorio e senha padrão
-      if(user.resetObrigatorio === true && senha === "12345678"){
-        const nova = prompt("Você deve alterar sua senha agora (mín. 6 caracteres):");
-        if(!nova || nova.length < 6){
-          alert("⚠️ Senha não alterada. Tente novamente.");
-          return;
-        }
-        user.senha = nova;
-        user.resetObrigatorio = false;
-        salvarUsuarioAtualizado(contexto, user);
-        alert("✅ Senha alterada com sucesso!");
+      // Se for leoguerramaia@gmail.com -> admin
+      if(user.email.toLowerCase() === "leoguerramaia@gmail.com"){
+        alert("✅ Login como administrador realizado!");
+        window.location.href = "admin.html";
+        return;
       }
 
-      // Regra solicitada: se email for leoguerramaia@gmail.com => ir para admin.html
-      if(email.toLowerCase() === "leoguerramaia@gmail.com"){
-        window.location.href = "admin.html";
-      } else {
-        window.location.href = "usuario.html";
-      }
+      // Usuário normal -> salva como logado e vai para usuariologado.html
+      localStorage.setItem("usuarioLogado", JSON.stringify(user));
+      alert("✅ Login realizado com sucesso!");
+      window.location.href = "usuariologado.html";
     });
   </script>
 </body>
