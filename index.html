@@ -86,8 +86,8 @@
   <header>
     <h1>🙏 Pedidos de Oração</h1>
     <div class="top-buttons">
-      <button onclick="cadastroUsuario()">📝 Cadastre-se</button>
-      <button onclick="loginAdmin()">🔑 Login</button>
+      <button onclick="location.href='cadastro.html'">📝 Cadastre-se</button>
+      <button onclick="location.href='login.html'">🔑 Login</button>
     </div>
   </header>
 
@@ -102,27 +102,5 @@
     <button class="btn-pedido" onclick="location.href='usuario.html'">✍️ Fazer Pedido de Oração</button>
     <button class="btn-consulta" onclick="location.href='consultar.html'">🔍 Consultar Pedidos de Oração</button>
   </div>
-
-  <script>
-    function loginAdmin(){
-      let usuario = prompt("Digite o usuário:");
-      let senha = prompt("Digite a senha:");
-
-      let userSalvo = localStorage.getItem("adminUser") || "admin";
-      let passSalvo = localStorage.getItem("adminPass") || "admin";
-
-      if(usuario === userSalvo && senha === passSalvo){
-        alert("✅ Acesso liberado!");
-        window.location.href = "admin.html";
-      } else {
-        alert("❌ Usuário ou senha incorretos!");
-      }
-    }
-
-    function cadastroUsuario(){
-      alert("👉 Em breve será implementada a funcionalidade de cadastro de usuários.");
-      // Aqui você pode futuramente redirecionar para "cadastro.html"
-    }
-  </script>
 </body>
 </html>
