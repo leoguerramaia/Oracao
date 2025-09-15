@@ -10,7 +10,7 @@
       --ring:rgba(39,174,96,.35)}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background:var(--bg);color:var(--text)}
-    header{background:var(--accent);color:#fff;padding:20px 16px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+    header{background:#2c3e50;color:#fff;padding:20px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.15)}
     .container{max-width:720px;margin:32px auto;padding:0 16px}
     .card{background:var(--card);border-radius:14px;padding:24px;box-shadow:0 12px 30px rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.04)}
     label{display:block;font-weight:600;margin:14px 0 6px}
@@ -20,7 +20,7 @@
     button{border:none;font-weight:700;cursor:pointer;margin-top:12px}
     .btn-main{background:var(--primary);color:#fff}
     .btn-main:hover{background:var(--primary-hov)}
-    .btn-home{background:#fff;color:var(--accent);border:1px solid #e1e5ea}
+    .btn-home{background:#fff;color:#2c3e50;border:1px solid #e1e5ea}
     .btn-home:hover{background:#f7f9fb}
     .row{display:flex;gap:12px;flex-wrap:wrap}
     .row>div{flex:1}
@@ -88,6 +88,31 @@
   </main>
 
   <script>
+    // Garante que o admin fixo sempre exista
+    function garantirAdmin(){
+      let cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
+      const existeAdmin = cadastros.some(u => u.email === "admin");
+      if(!existeAdmin){
+        cadastros.push({
+          nome: "Administrador",
+          telefone: "",
+          email: "admin",
+          cep: "",
+          rua: "",
+          bairro: "",
+          numero: "",
+          complemento: "",
+          referencia: "",
+          visita: "NÃO",
+          maps: "",
+          senha: "pedidodeoracao",
+          fixo: true
+        });
+        localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
+      }
+    }
+    garantirAdmin();
+
     // Busca CEP no ViaCEP
     async function buscarCEP(){
       const cep = document.getElementById("cep").value.replace(/\D/g, '');
@@ -103,7 +128,7 @@
       }
     }
 
-    // Gera link do WhatsApp (sempre adiciona 55)
+    // Link WhatsApp
     document.getElementById("telefone").addEventListener("input", () => {
       const tel = document.getElementById("telefone").value.replace(/\D/g,'');
       const whatsDiv = document.getElementById("whatsLink");
@@ -114,14 +139,14 @@
       }
     });
 
-    // Pré-visualização do Google Maps
+    // Preview Maps
     function previewMaps(){
       const url = document.getElementById("maps").value.trim();
       const div = document.getElementById("mapsPreview");
       div.innerHTML = url ? `🌍 <a href="${url}" target="_blank">Visualizar localização</a>` : "";
     }
 
-    // Cadastro simples (salva no localStorage)
+    // Salvar cadastro normal
     document.getElementById("formCadastro").addEventListener("submit", function(e){
       e.preventDefault();
 
@@ -129,7 +154,7 @@
       const confirma = document.getElementById("confirmaSenha").value;
       if(senha !== confirma){ alert("❌ As senhas não coincidem!"); return; }
 
-      const cadastro = {
+      const novoCadastro = {
         nome: document.getElementById("nome").value.trim(),
         telefone: document.getElementById("telefone").value.trim(),
         email: document.getElementById("email").value.trim(),
@@ -144,13 +169,34 @@
         senha: senha
       };
 
-      localStorage.setItem("cadastroUsuario", JSON.stringify(cadastro));
+      let cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
+      cadastros.push(novoCadastro);
 
-      // Mostra login e senha para o usuário
+      // Garante admin no array
+      if(!cadastros.some(u => u.email === "admin")){
+        cadastros.push({
+          nome: "Administrador",
+          telefone: "",
+          email: "admin",
+          cep: "",
+          rua: "",
+          bairro: "",
+          numero: "",
+          complemento: "",
+          referencia: "",
+          visita: "NÃO",
+          maps: "",
+          senha: "pedidodeoracao",
+          fixo: true
+        });
+      }
+
+      localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
+
       document.getElementById("loginInfo").innerHTML = `
         <strong>Seus dados de acesso:</strong><br>
-        📧 Login (e-mail): ${cadastro.email}<br>
-        🔑 Senha: ${cadastro.senha}
+        📧 Login (e-mail): ${novoCadastro.email}<br>
+        🔑 Senha: ${novoCadastro.senha}
       `;
 
       alert("✅ Cadastro realizado com sucesso!");
