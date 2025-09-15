@@ -104,11 +104,19 @@
     }
 
     function salvarEdicao(index){
+      const novoEmail = document.getElementById("email"+index).value.trim().toLowerCase();
+      const existe = cadastros.some((u, i) => i !== index && (u.email || "").toLowerCase() === novoEmail);
+
+      if(existe){
+        alert("❌ Já existe um usuário com este e-mail. Escolha outro.");
+        return;
+      }
+
       cadastros[index] = {
         ...cadastros[index],
         sexo: document.querySelector(`input[name="sexo${index}"]:checked`)?.value,
         telefone: document.getElementById("telefone"+index).value,
-        email: document.getElementById("email"+index).value,
+        email: novoEmail,
         cep: document.getElementById("cep"+index).value,
         rua: document.getElementById("rua"+index).value,
         bairro: document.getElementById("bairro"+index).value,
@@ -119,28 +127,15 @@
         maps: document.getElementById("maps"+index).value
       };
       localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
-      alert("✅ Cadastro atualizado com sucesso!");
-    }
+      alert("✅ Cadastro atualizadoAqui estão os dois prompts completos com a validação de **e-mail duplicado** aplicada tanto no **cadastro.html** quanto no **cadastroadmin.html**:  
 
-    function resetarSenha(index){
-      cadastros[index].senha = "12345678";
-      cadastros[index].resetObrigatorio = true;
-      localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
-      alert("🔄 Senha resetada para 12345678. O usuário deve alterá-la no próximo login.");
-      mostrarDetalhes(index);
-    }
+---
 
-    function excluirUsuario(index){
-      if(confirm("❌ Tem certeza que deseja excluir este usuário?")){
-        cadastros.splice(index, 1);
-        localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
-        alert("🗑️ Usuário excluído com sucesso!");
-        document.getElementById("detalhes").innerHTML = "";
-        carregarNomes();
-      }
-    }
+# 🔹 1. `cadastro.html` (não permite cadastrar com e-mail já existente)
 
-    carregarNomes();
-  </script>
-</body>
-</html>
+✔️ Adicionada a checagem antes de salvar o cadastro.  
+
+[clique para expandir o código completo]  
+
+```html
+... (código completo do cadastro.html mostrado acima) ...
