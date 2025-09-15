@@ -40,42 +40,38 @@
 
       const emailInput = document.getElementById("email").value.trim().toLowerCase();
       const senha = document.getElementById("senha").value;
-
-      let cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
+      const cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
 
       // Admin fixo
       if(emailInput === "admin"){
-        if(senha === "pedidodeoracao"){
-          alert("✅ Login como ADMIN realizado!");
-          window.location.href = "admin.html";
-        } else {
+        if(senha !== "pedidodeoracao"){
           alert("❌ Senha incorreta para admin.");
+          return;
         }
+        const adminUser = { nome:"Administrador", email:"admin", sexo:"MASCULINO" };
+        localStorage.setItem("usuarioLogado", JSON.stringify(adminUser));
+        alert("✅ Login como ADMIN realizado!");
+        window.location.href = "admin.html";
         return;
       }
 
       // Busca usuário cadastrado
       const user = cadastros.find(u => (u.email || "").toLowerCase() === emailInput);
+      if(!user){ alert("❌ Usuário não encontrado."); return; }
+      if(user.senha !== senha){ alert("❌ Senha incorreta."); return; }
 
-      if(!user){
-        alert("❌ Usuário não encontrado.");
-        return;
-      }
-
-      if(user.senha !== senha){
-        alert("❌ Senha incorreta.");
-        return;
-      }
+      // Sempre salva o usuário logado (inclusive administradores por e-mail especial)
+      localStorage.setItem("usuarioLogado", JSON.stringify(user));
 
       // Regras especiais → admin.html
-      if(user.email.toLowerCase() === "leoguerramaia@gmail.com" || user.email.toLowerCase() === "admin@admin.com.br"){
+      const emailLower = (user.email || "").toLowerCase();
+      if(emailLower === "leoguerramaia@gmail.com" || emailLower === "admin@admin.com.br"){
         alert("✅ Login como administrador realizado!");
         window.location.href = "admin.html";
         return;
       }
 
-      // Usuário normal → usuariologado.html
-      localStorage.setItem("usuarioLogado", JSON.stringify(user));
+      // Usuário comum → usuariologado.html
       alert("✅ Login realizado com sucesso!");
       window.location.href = "usuariologado.html";
     });
