@@ -51,11 +51,8 @@
         return;
       }
       cadastros.forEach((c, i)=>{
-        if(c.email === "admin" || c.email.toLowerCase() === "leoguerramaia@gmail.com" || c.email.toLowerCase() === "admin@admin.com.br"){
-          return; // não mostrar usuários especiais
-        }
         const btn = document.createElement("button");
-        btn.textContent = c.nome;
+        btn.textContent = c.nome + " (" + c.email + ")";
         btn.onclick = ()=>mostrarDetalhes(i);
         lista.appendChild(btn);
       });
