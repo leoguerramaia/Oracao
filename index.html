@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Pedidos de Oração - Início</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -14,10 +15,39 @@
     header {
       background-color: #2c3e50;
       color: white;
-      padding: 20px;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      box-shadow: 0 2px 10px rgba(0,0,0,.15);
     }
     header h1 {
       margin: 0;
+      font-size: 22px;
+    }
+    .top-buttons {
+      position: absolute;
+      right: 16px;
+      display: flex;
+      gap: 10px;
+    }
+    .top-buttons button {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+    .top-buttons button:hover {
+      background: rgba(255,255,255,0.15);
     }
     .container {
       margin: 40px auto;
@@ -48,8 +78,6 @@
     }
     .btn-pedido { background: #27ae60; color: white; }
     .btn-pedido:hover { background: #219150; }
-    .btn-admin { background: #2980b9; color: white; }
-    .btn-admin:hover { background: #216698; }
     .btn-consulta { background: #8e44ad; color: white; }
     .btn-consulta:hover { background: #732d91; }
   </style>
@@ -57,10 +85,14 @@
 <body>
   <header>
     <h1>🙏 Pedidos de Oração</h1>
+    <div class="top-buttons">
+      <button onclick="cadastroUsuario()">📝 Cadastre-se</button>
+      <button onclick="loginAdmin()">🔑 Login</button>
+    </div>
   </header>
 
   <div class="container">
-    <img src="https://cdn-icons-png.flaticon.com/512/1995/1995574.png" alt="Pessoa orando">
+    <img src="https://cdn-icons-png.flaticon.com/512/1995/1995574.png" alt="Menina com Bíblia">
     <p>
       Seja Bem Vindo(a) ao <strong>Pedido de Oração</strong>! <br><br>
       Nesse espaço você poderá registrar seus pedidos de oração 
@@ -68,8 +100,7 @@
     </p>
 
     <button class="btn-pedido" onclick="location.href='usuario.html'">✍️ Fazer Pedido de Oração</button>
-    <button class="btn-admin" onclick="loginAdmin()">⚙️ Administrar Pedidos de Oração</button>
-    <button class="btn-consulta" onclick="location.href='usuario.html#consulta'">🔍 Consultar Meus Pedidos de Oração</button>
+    <button class="btn-consulta" onclick="location.href='consultar.html'">🔍 Consultar Pedidos de Oração</button>
   </div>
 
   <script>
@@ -86,6 +117,11 @@
       } else {
         alert("❌ Usuário ou senha incorretos!");
       }
+    }
+
+    function cadastroUsuario(){
+      alert("👉 Em breve será implementada a funcionalidade de cadastro de usuários.");
+      // Aqui você pode futuramente redirecionar para "cadastro.html"
     }
   </script>
 </body>
