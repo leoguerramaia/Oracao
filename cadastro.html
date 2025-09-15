@@ -40,6 +40,12 @@
         <label for="nome">Nome:</label>
         <input type="text" id="nome" required>
 
+        <label>Sexo:</label>
+        <div class="radios">
+          <label class="radio-option"><input type="radio" name="sexo" value="MASCULINO" required> MASCULINO</label>
+          <label class="radio-option"><input type="radio" name="sexo" value="FEMININO" required> FEMININO</label>
+        </div>
+
         <label for="telefone">Telefone (DDD + número):</label>
         <input type="tel" id="telefone" placeholder="11912345678" pattern="\d{10,11}" required>
         <div id="whatsLink" class="preview"></div>
@@ -95,6 +101,7 @@
       if(!existeAdmin){
         cadastros.push({
           nome: "Administrador",
+          sexo: "MASCULINO",
           telefone: "",
           email: "admin",
           cep: "",
@@ -156,6 +163,7 @@
 
       const novoCadastro = {
         nome: document.getElementById("nome").value.trim(),
+        sexo: document.querySelector("input[name='sexo']:checked")?.value,
         telefone: document.getElementById("telefone").value.trim(),
         email: document.getElementById("email").value.trim(),
         cep: document.getElementById("cep").value.trim(),
@@ -176,6 +184,7 @@
       if(!cadastros.some(u => u.email === "admin")){
         cadastros.push({
           nome: "Administrador",
+          sexo: "MASCULINO",
           telefone: "",
           email: "admin",
           cep: "",
