@@ -17,6 +17,10 @@
       --ring:rgba(178,34,34,.35);
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
     body{
       margin:0;
       font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -24,42 +28,39 @@
       color:var(--text);
     }
 
-    /* Cabeçalho */
     header{
       background:var(--primary);
-      color:#ffd700; /* dourado */
+      color:#ffd700;
       padding:20px;
       text-align:center;
       box-shadow:0 2px 10px rgba(0,0,0,.15);
       text-shadow:0 0 6px rgba(255,215,0,0.6);
     }
-    header h1{
-      margin:0;
-      font-size:24px;
-      letter-spacing:.5px;
-    }
+    header h1{margin:0;font-size:24px;letter-spacing:.5px}
 
-    /* Container */
     .container{
       max-width:720px;
       margin:32px auto;
       padding:0 16px;
     }
 
-    /* Card */
     .card{
       background:var(--card);
       border-radius:14px;
       padding:24px;
       box-shadow:0 12px 30px rgba(0,0,0,.08);
       border:1px solid rgba(0,0,0,.04);
+      margin:0 auto;
     }
 
-    label{
-      display:block;
-      font-weight:600;
-      margin:14px 0 6px;
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px; /* controla o espaço entre campos e botões */
     }
+
+    label{display:block;font-weight:600;margin-top:8px}
+    label .required{color:var(--primary);margin-left:4px}
 
     input,button{
       width:100%;
@@ -67,80 +68,40 @@
       border-radius:10px;
       font-size:15px;
     }
+    input{border:1px solid #e1e5ea;outline:none}
+    input:focus{border-color:var(--primary);box-shadow:0 0 0 4px var(--ring)}
 
-    input{
-      border:1px solid #e1e5ea;
-      outline:none;
-    }
-    input:focus{
-      border-color:var(--primary);
-      box-shadow:0 0 0 4px var(--ring);
+    .erro{
+      color:var(--primary);
+      font-size:13px;
+      display:none;
     }
 
-    /* Botões */
     button{
       border:none;
       font-weight:700;
       cursor:pointer;
-      margin-top:12px;
       transition:.3s;
     }
-    .btn-main{
-      background:var(--primary);
-      color:#fff;
-    }
-    .btn-main:hover{
-      background:var(--primary-hov);
-    }
-    .btn-home{
-      background:#fff;
-      color:var(--accent);
-      border:1px solid #e1e5ea;
-    }
-    .btn-home:hover{
-      background:#f7f9fb;
-      color:var(--accent-hov);
-    }
+    .btn-main{background:var(--primary);color:#fff}
+    .btn-main:hover{background:var(--primary-hov)}
+    .btn-home{background:#fff;color:var(--accent);border:1px solid #e1e5ea}
+    .btn-home:hover{background:#f7f9fb;color:var(--accent-hov)}
 
-    /* Layout responsivo */
-    .row{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-    .row>div{
-      flex:1;
-      min-width:140px;
-    }
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .row>div{flex:1;min-width:140px}
 
-    /* Radios */
-    .radios{
-      display:flex;
-      gap:20px;
-      flex-wrap:wrap;
-      margin:8px 0;
-    }
-    .radio-option{
-      display:flex;
-      align-items:center;
-      gap:6px;
-    }
-    .radio-option input{
-      accent-color:var(--primary);
-    }
+    .radios{display:flex;gap:20px;flex-wrap:wrap}
+    .radio-option{display:flex;align-items:center;gap:6px}
+    .radio-option input{accent-color:var(--primary)}
 
-    /* Preview links */
-    .preview{
-      margin-top:8px;
-      font-size:14px;
-    }
-    .preview a{
-      color:var(--primary);
-      text-decoration:none;
-    }
+    .preview{font-size:14px}
+    .preview a{color:var(--primary);text-decoration:none}
 
+    /* 🔴 escondemos o bloco de login-info quando vazio */
     .login-info{
-      margin-top:20px;
+      display:none;
+      margin-top:10px;
       padding:12px;
       background:#f9f9f9;
       border-radius:10px;
@@ -148,8 +109,7 @@
       border:1px solid #e1e5ea;
     }
 
-    /* Responsividade */
-    @media (max-width: 768px){
+    @media (max-width:768px){
       header h1{font-size:20px}
       .container{margin:16px auto}
       .card{padding:18px}
@@ -161,26 +121,26 @@
   <header><h1>📝 Cadastro</h1></header>
   <main class="container">
     <section class="card">
-      <p>Ao se cadastrar poderemos te conhecer um pouco mais e você terá acesso a mais funcionalidades do nosso site!</p>
       <form id="formCadastro">
-        <label for="nome">Nome:</label>
+        <label for="nome">Nome:<span class="required">*</span></label>
         <input type="text" id="nome" required>
 
-        <label>Sexo:</label>
+        <label>Sexo:<span class="required">*</span></label>
         <div class="radios">
           <label class="radio-option"><input type="radio" name="sexo" value="MASCULINO" required> MASCULINO</label>
           <label class="radio-option"><input type="radio" name="sexo" value="FEMININO" required> FEMININO</label>
         </div>
 
-        <label for="telefone">Telefone (DDD + número):</label>
-        <input type="tel" id="telefone" placeholder="11912345678" pattern="\d{10,11}" required>
+        <label for="telefone">Telefone:<span class="required">*</span></label>
+        <input type="tel" id="telefone" pattern="\d{10,11}" required>
         <div id="whatsLink" class="preview"></div>
 
-        <label for="email">E-mail:</label>
-        <input type="email" id="email" placeholder="seuemail@exemplo.com" required>
+        <label for="email">E-mail:<span class="required">*</span></label>
+        <input type="email" id="email" required>
+        <div id="emailErro" class="erro">❌ Já existe um cadastro com este e-mail.</div>
 
         <label for="cep">CEP:</label>
-        <input type="text" id="cep" maxlength="8" onblur="buscarCEP()" required>
+        <input type="text" id="cep" maxlength="8" onblur="buscarCEP()">
 
         <div id="enderecoAuto" style="display:none;">
           <label for="rua">Rua:</label><input type="text" id="rua">
@@ -188,29 +148,30 @@
         </div>
 
         <div class="row">
-          <div><label for="numero">Número:</label><input type="text" id="numero" required></div>
+          <div><label for="numero">Número:</label><input type="text" id="numero"></div>
           <div><label for="complemento">Complemento:</label><input type="text" id="complemento"></div>
         </div>
 
         <label for="referencia">Ponto de Referência:</label>
         <input type="text" id="referencia">
 
-        <label>Aceita Visita?</label>
+        <label>Aceita Visita?<span class="required">*</span></label>
         <div class="radios">
           <label class="radio-option"><input type="radio" name="visita" value="SIM" required>SIM</label>
           <label class="radio-option"><input type="radio" name="visita" value="NÃO" required>NÃO</label>
         </div>
 
         <label for="maps">URL do Google Maps:</label>
-        <input type="url" id="maps" oninput="previewMaps()" required>
+        <input type="url" id="maps" oninput="previewMaps()">
         <div id="mapsPreview" class="preview"></div>
 
-        <label for="senha">Senha:</label>
+        <label for="senha">Senha:<span class="required">*</span></label>
         <input type="password" id="senha" required>
 
-        <label for="confirmaSenha">Confirmar Senha:</label>
+        <label for="confirmaSenha">Confirmar Senha:<span class="required">*</span></label>
         <input type="password" id="confirmaSenha" required>
 
+        <!-- 🔴 Agora só aparece quando tiver conteúdo -->
         <div id="loginInfo" class="login-info"></div>
 
         <button type="submit" class="btn-main">✅ Finalizar Cadastro</button>
@@ -226,20 +187,10 @@
       const existeAdmin = cadastros.some(u => u.email === "admin");
       if(!existeAdmin){
         cadastros.push({
-          nome: "Administrador",
-          sexo: "MASCULINO",
-          telefone: "",
-          email: "admin",
-          cep: "",
-          rua: "",
-          bairro: "",
-          numero: "",
-          complemento: "",
-          referencia: "",
-          visita: "NÃO",
-          maps: "",
-          senha: "pedidodeoracao",
-          fixo: true
+          nome:"Administrador",sexo:"MASCULINO",telefone:"",
+          email:"admin",cep:"",rua:"",bairro:"",numero:"",
+          complemento:"",referencia:"",visita:"NÃO",maps:"",
+          senha:"pedidodeoracao",fixo:true
         });
         localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
       }
@@ -261,7 +212,7 @@
       }
     }
 
-    // WhatsApp link preview
+    // WhatsApp preview
     document.getElementById("telefone").addEventListener("input", () => {
       const tel = document.getElementById("telefone").value.replace(/\D/g,'');
       const whatsDiv = document.getElementById("whatsLink");
@@ -283,17 +234,29 @@
     document.getElementById("formCadastro").addEventListener("submit", function(e){
       e.preventDefault();
 
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const erroDiv = document.getElementById("emailErro");
+      const cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
+
+      if(cadastros.some(u => u.email.toLowerCase() === email)){
+        erroDiv.style.display = "block";
+        return;
+      } else {
+        erroDiv.style.display = "none";
+      }
+
       const senha = document.getElementById("senha").value;
       const confirma = document.getElementById("confirmaSenha").value;
-      if(senha !== confirma){ alert("❌ As senhas não coincidem!"); return; }
-
-      let cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
+      if(senha !== confirma){
+        alert("❌ As senhas não coincidem!");
+        return;
+      }
 
       const novoCadastro = {
         nome: document.getElementById("nome").value.trim(),
         sexo: document.querySelector("input[name='sexo']:checked")?.value,
         telefone: document.getElementById("telefone").value.trim(),
-        email: document.getElementById("email").value.trim(),
+        email: email,
         cep: document.getElementById("cep").value.trim(),
         rua: document.getElementById("rua").value.trim(),
         bairro: document.getElementById("bairro").value.trim(),
@@ -305,20 +268,15 @@
         senha: senha
       };
 
-      // 🚨 Verifica e-mail duplicado
-      const existe = cadastros.some(u => u.email.toLowerCase() === novoCadastro.email.toLowerCase());
-      if(existe){
-        alert("❌ Já existe um cadastro com este e-mail. Por favor, utilize outro.");
-        return;
-      }
-
       cadastros.push(novoCadastro);
-
       localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
 
-      document.getElementById("loginInfo").innerHTML = `
+      // 🔴 mostra login-info apenas quando houver conteúdo
+      const loginInfoDiv = document.getElementById("loginInfo");
+      loginInfoDiv.style.display = "block";
+      loginInfoDiv.innerHTML = `
         <strong>Seus dados de acesso:</strong><br>
-        📧 Login (e-mail): ${novoCadastro.email}<br>
+        📧 Login: ${novoCadastro.email}<br>
         🔑 Senha: ${novoCadastro.senha}
       `;
 
