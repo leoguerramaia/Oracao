@@ -7,28 +7,84 @@
   <style>
     :root{
       --bg:#fff7f2; --card:#ffffff; --text:#2c3e50; --muted:#6b7b8c;
-      --primary:#b22222; --primary-hov:#800000; --accent:#ff4500; --accent-hov:#e03c00;
+      --primary:#b22222;        /* vermelho queimado */
+      --primary-hov:#800000;    /* vinho escuro */
+      --accent:#ff4500;         /* laranja vivo */
+      --accent-hov:#e03c00;     /* laranja escuro */
+      --gold:#ffd700;           /* dourado */
       --ring:rgba(178,34,34,.35);
     }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
-    header{background:var(--primary);color:#ffd700;padding:20px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.15);text-shadow:0 0 6px rgba(255,215,0,.6)}
+
+    * { box-sizing: border-box; }
+
+    body{
+      margin:0;
+      font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    header{
+      background:var(--primary);
+      color:var(--gold);
+      padding:20px;
+      text-align:center;
+      box-shadow:0 2px 10px rgba(0,0,0,.15);
+      text-shadow:0 0 6px rgba(255,215,0,0.6);
+    }
     header h1{margin:0;font-size:24px;letter-spacing:.5px}
-    .container{max-width:400px;margin:32px auto;padding:0 16px}
-    .card{background:var(--card);border-radius:14px;padding:24px;box-shadow:0 12px 30px rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.04)}
-    form{display:flex;flex-direction:column;gap:14px}
+
+    .container{
+      max-width:400px;
+      margin:32px auto;
+      padding:0 16px;
+    }
+
+    .card{
+      background:var(--card);
+      border-radius:14px;
+      padding:24px;
+      box-shadow:0 12px 30px rgba(0,0,0,.08);
+      border:1px solid rgba(0,0,0,.04);
+    }
+
+    form { display:flex; flex-direction:column; gap:14px; }
+
     label{font-weight:600}
     label .required{color:var(--primary);margin-left:4px}
-    input,button{width:100%;padding:12px 14px;border-radius:10px;font-size:15px}
-    input{border:1px solid #e1e5ea;outline:none}
+
+    input,button{
+      width:100%;
+      padding:12px 14px;
+      border-radius:10px;
+      font-size:15px;
+    }
+    input{border:1px solid #e1e5ea;outline:none;background:#fff}
     input:focus{border-color:var(--primary);box-shadow:0 0 0 4px var(--ring)}
-    .erro{color:var(--primary);font-size:13px;display:none}
-    button{border:none;font-weight:700;cursor:pointer;transition:.3s}
+
+    .erro{
+      color:var(--primary);
+      font-size:13px;
+      display:none;
+    }
+
+    button{
+      border:none;
+      font-weight:700;
+      cursor:pointer;
+      transition:.3s;
+    }
     .btn-main{background:var(--primary);color:#fff}
     .btn-main:hover{background:var(--primary-hov)}
     .btn-home{background:#fff;color:var(--accent);border:1px solid #e1e5ea}
     .btn-home:hover{background:#f7f9fb;color:var(--accent-hov)}
-    @media (max-width:768px){header h1{font-size:20px}.container{margin:16px auto}.card{padding:18px}button{font-size:14px;padding:10px}}
+
+    @media (max-width:768px){
+      header h1{font-size:20px}
+      .container{margin:16px auto}
+      .card{padding:18px}
+      button{font-size:14px;padding:10px}
+    }
   </style>
 </head>
 <body>
@@ -38,9 +94,12 @@
       <form id="formLogin">
         <label for="email">E-mail:<span class="required">*</span></label>
         <input type="email" id="email" required>
+
         <label for="senha">Senha:<span class="required">*</span></label>
         <input type="password" id="senha" required>
+
         <div id="erroLogin" class="erro">❌ E-mail ou senha inválidos.</div>
+
         <button type="submit" class="btn-main">➡️ Entrar</button>
         <button type="button" class="btn-home" onclick="location.href='index.html'">🏠 Página Inicial</button>
       </form>
@@ -52,13 +111,16 @@
       try { return JSON.parse(localStorage.getItem("cadastrosUsuarios")) || []; }
       catch { return []; }
     }
-    function isAdmin(user, cadastros){
-      if(!user) return false;
-      const email = (user.email || "").toLowerCase();
-      const adminsFixos = ["leoguerramaia@gmail.com","admin@admin.com.br","admin"];
-      if(adminsFixos.includes(email)) return true;
-      const reg = cadastros.find(u => (u.email || "").toLowerCase() === email);
-      return !!reg && (reg.fixo === true || reg.isAdmin === true);
+
+    // Normaliza o tipo a partir do registro (mantém compatibilidade com cadastros antigos)
+    function obterTipoUsuario(reg){
+      const tipo = (reg && reg.tipoUsuario) ? String(reg.tipoUsuario).trim() : "";
+      if (tipo.toLowerCase() === "administrador") return "Administrador";
+      if (tipo.toLowerCase() === "usuário" || tipo.toLowerCase() === "usuario") return "Usuário";
+
+      // Fallback: se registro antigo tinha flags
+      if (reg && (reg.isAdmin === true || reg.fixo === true)) return "Administrador";
+      return "Usuário";
     }
 
     document.getElementById("formLogin").addEventListener("submit", function(e){
@@ -69,7 +131,11 @@
       const erroDiv = document.getElementById("erroLogin");
 
       const cadastros = getCadastros();
-      const usuario = cadastros.find(u => (u.email || "").toLowerCase() === email && u.senha === senha);
+
+      // Encontra usuário por email + senha
+      const usuario = cadastros.find(u =>
+        (u.email || "").toLowerCase() === email && String(u.senha) === String(senha)
+      );
 
       if(!usuario){
         erroDiv.style.display = "block";
@@ -77,11 +143,18 @@
       }
       erroDiv.style.display = "none";
 
-      // ✅ Salva sessão do usuário para ser lida em admin.html e demais páginas
+      // Define e garante o tipo de usuário a partir do cadastro
+      const tipoUsuario = obterTipoUsuario(usuario);
+
+      // Atualiza também no cadastro em memória para manter consistência
+      usuario.tipoUsuario = tipoUsuario;
+      usuario.isAdmin = (tipoUsuario === "Administrador") || usuario.isAdmin === true || usuario.fixo === true;
+
+      // Salva sessão com as informações do cadastro
       localStorage.setItem("usuarioLogado", JSON.stringify(usuario));
 
-      // Redireciona conforme perfil
-      if (isAdmin(usuario, cadastros)) {
+      // Redireciona conforme TIPO DE USUÁRIO
+      if (tipoUsuario === "Administrador") {
         window.location.href = "admin.html";
       } else {
         window.location.href = "usuariologado.html";
