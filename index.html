@@ -133,5 +133,46 @@
     <button onclick="window.location.href='usuario.html'">Fazer Pedido de Oração</button>
     <button onclick="window.location.href='consulta.html'">Consultar Pedidos de Oração</button>
   </div>
+  <!-- Barra do usuário (padrão do site) -->
+<style>
+  .userbar{position:absolute;right:16px;top:50%;transform:translateY(-50%);display:none;align-items:center;gap:12px;color:#fff}
+  .user-meta{text-align:right;line-height:1.2;font-size:13px;color:#fff}
+  .user-meta strong{display:block;color:#fff}
+  .badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:#ffffff22;color:#fff;margin-top:4px}
+  .logout{background:#ff4500;color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700;transition:.25s;box-shadow:0 6px 16px rgba(0,0,0,.12)}
+  .logout:hover{background:#e03c00}
+</style>
+
+<!-- Adicione dentro do <header> do index.html: -->
+<div class="userbar" id="homeUserBar">
+  <div class="user-meta" id="homeUserMeta"></div>
+  <button class="logout" id="homeLogoutBtn">Sair</button>
+</div>
+
+<script>
+  (function(){
+    const ADMINS_FIXOS=["leoguerramaia@gmail.com","admin@admin.com.br","admin"];
+    const getUser=()=>{try{return JSON.parse(localStorage.getItem("usuarioLogado"))}catch{return null}};
+    const getCadastros=()=>{try{return JSON.parse(localStorage.getItem("cadastrosUsuarios"))||[]}catch{return[]}};
+    const isAdmin=(u,c)=>{ if(!u) return false; const e=(u.email||"").toLowerCase(); if(ADMINS_FIXOS.includes(e)) return true; const r=c.find(x=>(x.email||"").toLowerCase()===e); return !!r && (r.fixo===true || r.isAdmin===true); };
+    const firstName=n=>(n||"Usuário").trim().split(" ")[0];
+
+    const user=getUser();
+    if(!user) return; // visitante → não mostra barra
+
+    const meta=document.getElementById("homeUserMeta");
+    const bar=document.getElementById("homeUserBar");
+    const perfil = isAdmin(user, getCadastros()) ? "Administrador" : "Usuário";
+
+    meta.innerHTML = `<strong>${firstName(user.nome)}</strong><span>${user.email||""}</span><span class="badge">${perfil}</span>`;
+    bar.style.display="flex";
+
+    document.getElementById("homeLogoutBtn").addEventListener("click", ()=>{
+      localStorage.removeItem("usuarioLogado");
+      alert("Você realizou o logoff.");
+      location.reload();
+    });
+  })();
+</script>
 </body>
 </html>
