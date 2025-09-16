@@ -17,9 +17,7 @@
       --ring:rgba(178,34,34,.35);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body{
       margin:0;
@@ -53,36 +51,23 @@
       margin:0 auto;
     }
 
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px; /* controla o espaço entre campos e botões */
-    }
+    form{display:flex;flex-direction:column;gap:12px}
 
     label{display:block;font-weight:600;margin-top:8px}
     label .required{color:var(--primary);margin-left:4px}
 
-    input,button{
+    input,select,button{
       width:100%;
       padding:12px 14px;
       border-radius:10px;
       font-size:15px;
     }
-    input{border:1px solid #e1e5ea;outline:none}
-    input:focus{border-color:var(--primary);box-shadow:0 0 0 4px var(--ring)}
+    input,select{border:1px solid #e1e5ea;outline:none;background:#fff}
+    input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 4px var(--ring)}
 
-    .erro{
-      color:var(--primary);
-      font-size:13px;
-      display:none;
-    }
+    .erro{color:var(--primary);font-size:13px;display:none}
 
-    button{
-      border:none;
-      font-weight:700;
-      cursor:pointer;
-      transition:.3s;
-    }
+    button{border:none;font-weight:700;cursor:pointer;transition:.3s}
     .btn-main{background:var(--primary);color:#fff}
     .btn-main:hover{background:var(--primary-hov)}
     .btn-home{background:#fff;color:var(--accent);border:1px solid #e1e5ea}
@@ -98,15 +83,14 @@
     .preview{font-size:14px}
     .preview a{color:var(--primary);text-decoration:none}
 
-    /* 🔴 escondemos o bloco de login-info quando vazio */
-    .login-info{
-      display:none;
-      margin-top:10px;
-      padding:12px;
-      background:#f9f9f9;
-      border-radius:10px;
-      font-size:14px;
-      border:1px solid #e1e5ea;
+    /* Bloco exibido após o cadastro – mantido oculto para não criar "vazio" */
+    .login-info{display:none;margin-top:10px;padding:12px;background:#f9f9f9;border-radius:10px;font-size:14px;border:1px solid #e1e5ea}
+
+    /* Esconde visualmente mas mantém no DOM (para ler o valor no submit) */
+    .visually-hidden{
+      position:absolute !important;
+      width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+      clip:rect(0 0 0 0);white-space:nowrap;border:0;
     }
 
     @media (max-width:768px){
@@ -171,7 +155,14 @@
         <label for="confirmaSenha">Confirmar Senha:<span class="required">*</span></label>
         <input type="password" id="confirmaSenha" required>
 
-        <!-- 🔴 Agora só aparece quando tiver conteúdo -->
+        <!-- Campo solicitado: Tipo de Usuário (select) – por padrão "Usuário".
+             Escondido no cadastro público; administradores alteram em cadastroadmin.html -->
+        <label for="tipoUsuario" class="visually-hidden">Tipo de Usuário</label>
+        <select id="tipoUsuario" class="visually-hidden" aria-hidden="true">
+          <option value="Usuário" selected>Usuário</option>
+          <option value="Administrador">Administrador</option>
+        </select>
+
         <div id="loginInfo" class="login-info"></div>
 
         <button type="submit" class="btn-main">✅ Finalizar Cadastro</button>
@@ -181,16 +172,22 @@
   </main>
 
   <script>
-    // Garante admin fixo
+    // Garante admin fixo (usuário "admin")
     function garantirAdmin(){
       let cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
-      const existeAdmin = cadastros.some(u => u.email === "admin");
+      const existeAdmin = cadastros.some(u => (u.email||"").toLowerCase() === "admin");
       if(!existeAdmin){
         cadastros.push({
-          nome:"Administrador",sexo:"MASCULINO",telefone:"",
-          email:"admin",cep:"",rua:"",bairro:"",numero:"",
-          complemento:"",referencia:"",visita:"NÃO",maps:"",
-          senha:"pedidodeoracao",fixo:true
+          nome:"Administrador",
+          sexo:"MASCULINO",
+          telefone:"",
+          email:"admin",
+          cep:"", rua:"", bairro:"", numero:"", complemento:"", referencia:"",
+          visita:"NÃO", maps:"",
+          senha:"pedidodeoracao",
+          fixo:true,                 // reconhecido como admin pelo sistema
+          isAdmin:true,
+          tipoUsuario:"Administrador" // novo campo
         });
         localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
       }
@@ -238,7 +235,8 @@
       const erroDiv = document.getElementById("emailErro");
       const cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
 
-      if(cadastros.some(u => u.email.toLowerCase() === email)){
+      // Bloqueia e-mail duplicado
+      if(cadastros.some(u => (u.email||"").toLowerCase() === email)){
         erroDiv.style.display = "block";
         return;
       } else {
@@ -251,6 +249,9 @@
         alert("❌ As senhas não coincidem!");
         return;
       }
+
+      // Lê o tipo (select oculto) – padrão "Usuário"
+      const tipoUsuario = (document.getElementById("tipoUsuario")?.value || "Usuário").trim();
 
       const novoCadastro = {
         nome: document.getElementById("nome").value.trim(),
@@ -265,20 +266,13 @@
         referencia: document.getElementById("referencia").value.trim(),
         visita: document.querySelector("input[name='visita']:checked")?.value,
         maps: document.getElementById("maps").value.trim(),
-        senha: senha
+        senha: senha,
+        tipoUsuario: tipoUsuario,                     // novo campo salvo
+        isAdmin: (tipoUsuario === "Administrador")    // flag de compatibilidade
       };
 
       cadastros.push(novoCadastro);
       localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
-
-      // 🔴 mostra login-info apenas quando houver conteúdo
-      const loginInfoDiv = document.getElementById("loginInfo");
-      loginInfoDiv.style.display = "block";
-      loginInfoDiv.innerHTML = `
-        <strong>Seus dados de acesso:</strong><br>
-        📧 Login: ${novoCadastro.email}<br>
-        🔑 Senha: ${novoCadastro.senha}
-      `;
 
       alert("✅ Cadastro realizado com sucesso!");
       window.location.href = "index.html";
