@@ -133,7 +133,7 @@
       const adminsFixos = ["leoguerramaia@gmail.com","admin@admin.com.br","admin"];
 
       if(adminsFixos.includes(email) || usuario.fixo === true || usuario.isAdmin === true){
-        window.location.href = "admin.html";
+        window.location.href = "admin.html";   // ✅ agora vai para admin.html
       } else {
         window.location.href = "usuariologado.html";
       }
@@ -141,4 +141,3 @@
   </script>
 </body>
 </html>
-
