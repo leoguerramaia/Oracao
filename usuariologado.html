@@ -2,53 +2,118 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Pedido de Oração - Usuário Logado</title>
+  <title>Pedido de Oração</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    :root{--bg:#f4f6f8; --card:#ffffff; --text:#2c3e50; --muted:#6b7b8c;
-      --primary:#27ae60; --primary-hov:#219150; --accent:#2c3e50; --ring:rgba(39,174,96,.35);}
-    body{margin:0;font-family:system-ui,Arial,sans-serif;background:var(--bg);color:var(--text);}
-    header{background:var(--accent);color:#fff;padding:20px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,.15);}
-    header h1{margin:0;font-size:22px}
-    .user-info{font-size:14px;text-align:right}
-    .user-info span{display:block}
-    .logout{background:#e74c3c;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:12px;margin-top:4px}
-    .logout:hover{background:#c0392b}
-    .container{max-width:720px;margin:32px auto;padding:0 16px;}
-    .card{background:var(--card);border-radius:14px;padding:24px;box-shadow:0 12px 30px rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.04);}
-    h2{margin:0 0 6px 0;font-size:22px}
-    .subtitle{color:var(--muted);margin:0 0 20px 0;font-size:14px}
-    label.title{display:block;font-weight:700;margin:14px 0 8px}
-    input[type="text"], textarea{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #e1e5ea;background:#fff;font-size:15px;color:var(--text);outline:none}
-    textarea{min-height:120px;resize:vertical}
-    .radios{display:flex;gap:16px;flex-wrap:wrap}
-    .radio-pill{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid #e1e5ea;border-radius:999px;cursor:pointer;background:#fff}
-    .radio-pill input{accent-color:var(--primary);width:18px;height:18px;margin:0}
-    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
-    .btn{border:none;border-radius:10px;padding:12px 16px;cursor:pointer;font-weight:700}
-    .btn-primary{background:var(--primary);color:#fff}
+    :root{
+      --bg:#fff7f2;
+      --card:#ffffff;
+      --text:#2c3e50;
+      --muted:#6b7b8c;
+      --primary:#b22222;        /* vermelho queimado */
+      --primary-hov:#800000;    /* vinho escuro */
+      --accent:#ff4500;         /* laranja vivo */
+      --accent-hov:#e03c00;     /* laranja escuro */
+      --gold:#ffd700;
+      --ring: rgba(178,34,34,.35); /* sombra em vermelho queimado */
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:var(--bg); color:var(--text);
+      min-height:100vh; display:flex; flex-direction:column;
+    }
+    header{
+      position:relative;
+      background:var(--primary); color:var(--gold); /* título dourado */
+      padding:20px 16px; text-align:center;
+      box-shadow:0 2px 10px rgba(0,0,0,.15);
+      text-shadow:0 0 6px rgba(255,215,0,0.6);
+    }
+    header h1{margin:0; font-size:22px; letter-spacing:.3px}
+
+    /* Barra do usuário (canto superior direito) */
+    .userbar{position:absolute;right:16px;top:50%;transform:translateY(-50%);
+      display:none;align-items:center;gap:12px;color:#fff}
+    .user-meta{ text-align:right; line-height:1.2; font-size:13px; color:#fff }
+    .user-meta strong{display:block; color:#fff}
+    .badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:#ffffff22;color:#fff;margin-top:4px}
+    .logout{background:var(--accent);color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700;transition:.25s;box-shadow:0 6px 16px rgba(0,0,0,.12)}
+    .logout:hover{background:var(--accent-hov)}
+
+    .container{
+      max-width:720px; margin:32px auto; padding:0 16px; width:100%;
+      flex:1; display:flex; flex-direction:column; gap:16px;
+    }
+    .card{
+      background:var(--card); border-radius:14px; padding:24px;
+      box-shadow:0 12px 30px rgba(0,0,0,.08);
+      border:1px solid rgba(0,0,0,.04);
+    }
+    h2{margin:0 0 6px 0; font-size:22px; color:var(--primary)}
+    .subtitle{color:var(--muted); margin:0 0 20px 0; font-size:14px}
+    label.title{display:block; font-weight:700; margin:14px 0 8px}
+    input[type="text"], textarea{
+      width:100%; padding:12px 14px; border-radius:10px; border:1px solid #e1e5ea;
+      background:#fff; font-size:15px; color:var(--text); outline:none;
+      transition:border .2s, box-shadow .2s, transform .02s;
+    }
+    input[type="text"]:focus, textarea:focus{
+      border-color:var(--primary); box-shadow:0 0 0 4px var(--ring);
+    }
+    textarea{min-height:120px; resize:vertical}
+    .radios{display:flex; gap:16px; flex-wrap:wrap}
+    .radio-pill{
+      display:flex; align-items:center; gap:8px; padding:10px 14px;
+      border:1px solid #e1e5ea; border-radius:999px; cursor:pointer; user-select:none;
+      transition:transform .02s, border .2s, background .2s;
+      background:#fff;
+    }
+    .radio-pill:hover{border-color:#d4dbe3}
+    .radio-pill input{accent-color:var(--primary); width:18px; height:18px; margin:0}
+    .actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:18px}
+    .btn{
+      appearance:none; border:none; border-radius:10px; padding:12px 16px; cursor:pointer;
+      font-weight:700; letter-spacing:.3px; transition:transform .02s, box-shadow .2s, background .2s;
+      box-shadow:0 6px 16px rgba(0,0,0,.06);
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn-primary{background:var(--primary); color:#fff}
     .btn-primary:hover{background:var(--primary-hov)}
-    .btn-ghost{background:#fff;color:var(--accent);border:1px solid #e1e5ea}
-    .btn-ghost:hover{background:#f7f9fb}
+    .btn-ghost{
+      background:#fff; color:var(--accent); border:1px solid #e1e5ea;
+    }
+    .btn-ghost:hover{background:#f7f9fb; color:var(--accent-hov)}
+    .footnote{margin-top:10px; color:var(--muted); font-size:12px}
+
+    @media (max-width:640px){
+      header h1{font-size:20px}
+      .btn{width:100%}
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>🙏 Pedidos de Oração</h1>
-    <div class="user-info" id="userInfo"></div>
+
+    <!-- barra de usuário -->
+    <div class="userbar" id="userBar">
+      <div class="user-meta" id="userMeta"></div>
+      <button class="logout" id="logoutBtn">Sair</button>
+    </div>
   </header>
 
   <main class="container">
-    <section class="card">
-      <h2>Registrar Pedido</h2>
-      <p class="subtitle">Preencha os campos e registre seu pedido de oração.</p>
+    <section class="card" aria-labelledby="titulo">
+      <h2 id="titulo">Registrar Pedido</h2>
+      <p class="subtitle">Seu nome e sexo já vêm do seu cadastro. Descreva seu pedido.</p>
 
       <form id="formulario">
         <label for="nome" class="title">Nome</label>
-        <input type="text" id="nome" name="nome" readonly>
+        <input type="text" id="nome" name="nome" placeholder="Ex.: Maria Silva" required>
 
         <span class="title">Sexo</span>
-        <div class="radios">
+        <div class="radios" role="radiogroup" aria-label="Sexo">
           <label class="radio-pill" for="masc">
             <input type="radio" id="masc" name="sexo" value="MASCULINO" required>
             <span>MASCULINO</span>
@@ -66,66 +131,88 @@
           <button type="submit" class="btn btn-primary">✍️ Gravar Pedido de Oração</button>
           <button type="button" class="btn btn-ghost" onclick="location.href='index.html'">🏠 Página Inicial</button>
         </div>
+        <p class="footnote">Seus pedidos ficam salvos neste dispositivo.</p>
       </form>
     </section>
   </main>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const userLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
+    /* ===== Sessão & helpers ===== */
+    const getUser = () => { try { return JSON.parse(localStorage.getItem("usuarioLogado")); } catch { return null; } };
+    const firstName = (n) => (n||"Usuário").trim().split(" ")[0];
+    const tipoFromReg = (reg) => {
+      if(!reg) return "Usuário";
+      const t = (reg.tipoUsuario||"").toString().toLowerCase();
+      if(t==="administrador") return "Administrador";
+      if(t==="usuário"||t==="usuario") return "Usuário";
+      if(reg.isAdmin===true || reg.fixo===true) return "Administrador";
+      return "Usuário";
+    };
 
-      // Bloqueia acesso sem login
-      if(!userLogado){
+    function preencherDadosDoUsuario(){
+      const user = getUser();
+      if(!user){
         alert("⚠️ Você precisa estar logado para acessar esta página.");
         window.location.replace("login.html");
         return;
       }
+      // garante tipo
+      user.tipoUsuario = tipoFromReg(user);
 
-      const primeiroNome = (userLogado.nome || "Usuário").split(" ")[0];
-
-      // Popup de boas-vindas
-      alert("👋 Bem-vindo(a), " + primeiroNome + "!");
-
-      // Preenche cabeçalho (canto superior direito)
-      const info = document.getElementById("userInfo");
-      info.innerHTML = `
-        <span><strong>${primeiroNome}</strong></span>
-        <span>${userLogado.email || ""}</span>
-        <button class="logout" id="logoutBtn">Sair</button>
+      // barra superior
+      const meta = document.getElementById("userMeta");
+      meta.innerHTML = `
+        <strong>${firstName(user.nome)}</strong>
+        <span>${user.email || ""}</span>
+        <span class="badge">${user.tipoUsuario}</span>
       `;
+      document.getElementById("userBar").style.display = "flex";
+
       document.getElementById("logoutBtn").addEventListener("click", () => {
         localStorage.removeItem("usuarioLogado");
+        alert("Você realizou o logoff.");
         window.location.href = "index.html";
       });
 
-      // Preenche Nome e Sexo
-      document.getElementById("nome").value = userLogado.nome || "";
-      const sexo = (userLogado.sexo || "").toUpperCase();
+      // preenche campos do formulário
+      document.getElementById("nome").value = user.nome || "";
+      const sexo = (user.sexo || "").toUpperCase();
       if(sexo === "MASCULINO") document.getElementById("masc").checked = true;
-      if(sexo === "FEMININO")  document.getElementById("fem").checked = true;
+      if(sexo === "FEMININO")  document.getElementById("fem").checked  = true;
+    }
 
-      // Gravar pedido
-      document.getElementById("formulario").addEventListener("submit", function(e){
-        e.preventDefault();
-        const nome   = document.getElementById("nome").value.trim();
-        const sexoOp = document.querySelector("input[name='sexo']:checked")?.value;
-        const pedido = document.getElementById("pedido").value.trim();
-        const data   = new Date().toLocaleDateString("pt-BR");
+    document.addEventListener("DOMContentLoaded", preencherDadosDoUsuario);
 
-        if(nome && sexoOp && pedido){
-          const pedidos = JSON.parse(localStorage.getItem("pedidosOracao")) || [];
-          pedidos.push({nome, sexo: sexoOp, pedido, data});
-          localStorage.setItem("pedidosOracao", JSON.stringify(pedidos));
+    // Grava pedido no localStorage com data + e-mail do usuário
+    document.getElementById("formulario").addEventListener("submit", function(e){
+      e.preventDefault();
 
-          alert("🙏 Pedido de oração gravado com sucesso!");
-          this.reset();
+      const user = getUser();
+      if(!user){
+        alert("Sessão expirada. Faça login novamente.");
+        window.location.href = "login.html";
+        return;
+      }
 
-          // repõe nome e sexo após reset
-          document.getElementById("nome").value = userLogado.nome || "";
-          if(sexo === "MASCULINO") document.getElementById("masc").checked = true;
-          if(sexo === "FEMININO")  document.getElementById("fem").checked = true;
-        }
+      const nome = document.getElementById("nome").value.trim();
+      const sexo = document.querySelector("input[name='sexo']:checked")?.value;
+      const pedido = document.getElementById("pedido").value.trim();
+      const dataRegistro = new Date().toLocaleDateString("pt-BR", {
+        day: "2-digit", month: "2-digit", year: "numeric"
       });
+
+      if(!nome || !sexo || !pedido){
+        alert("Preencha todos os campos.");
+        return;
+      }
+
+      const pedidos = JSON.parse(localStorage.getItem("pedidosOracao")) || [];
+      pedidos.push({ nome, sexo, pedido, data: dataRegistro, email: user.email || "" });
+      localStorage.setItem("pedidosOracao", JSON.stringify(pedidos));
+
+      alert("🙏 Pedido de oração gravado com sucesso!");
+      // limpa apenas o texto do pedido; mantém nome/sexo do cadastro
+      document.getElementById("pedido").value = "";
     });
   </script>
 </body>
