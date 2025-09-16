@@ -12,7 +12,6 @@
       --gold:#ffd700; --ring:rgba(178,34,34,.35);
       --ok:#2ecc71; --warn:#f39c12; --danger:#e74c3c;
     }
-
     *{box-sizing:border-box}
     body{
       margin:0; font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -35,13 +34,14 @@
     .logout{background:var(--accent);color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700;transition:.25s;box-shadow:0 6px 16px rgba(0,0,0,.12)}
     .logout:hover{background:var(--accent-hov)}
 
-    /* Container */
-    .container{max-width:1100px;width:100%;margin:28px auto;padding:0 16px;flex:1;display:flex;flex-direction:column;gap:16px}
+    /* Container principal */
+    .container{max-width:1000px;width:100%;margin:28px auto;padding:0 16px;flex:1;display:flex;flex-direction:column;gap:16px}
+
     .card{background:var(--card);border-radius:14px;padding:20px;box-shadow:0 12px 30px rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.05)}
     .card h2{margin:0 0 6px 0;color:var(--primary);font-size:22px}
     .subtitle{color:var(--muted);margin:0 0 12px}
 
-    /* Top controls */
+    /* Controles superiores */
     .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
     .controls input, .controls select{
       padding:10px 12px;border-radius:10px;border:1px solid #e1e5ea;background:#fff;outline:none;
@@ -51,40 +51,55 @@
     .btn:active{transform:translateY(1px)}
     .btn-main{background:var(--primary);color:#fff}.btn-main:hover{background:var(--primary-hov)}
     .btn-outline{background:#fff;color:var(--accent);border:1px solid #e1e5ea}.btn-outline:hover{background:#f7f9fb;color:var(--accent-hov)}
+    .count{margin-left:auto;color:#6b7b8c;font-weight:700}
 
-    /* Tabela responsiva */
-    .table-wrap{overflow:auto;border:1px solid #eaeaea;border-radius:12px;background:#fff}
-    table{border-collapse:separate;border-spacing:0;width:100%;min-width:960px}
-    thead th{
-      position:sticky; top:0; background:#fafafa; color:#444; font-weight:700;
-      text-align:left; padding:12px; border-bottom:1px solid #eee; z-index:1;
+    /* Card de criação de novo usuário */
+    #createCard{display:none}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:12px}
+    @media (max-width:720px){ .grid{grid-template-columns:1fr} }
+    .fld{display:flex;flex-direction:column;gap:6px}
+    .fld label{font-weight:700;font-size:13px}
+    .fld input,.fld select{
+      padding:10px 12px;border-radius:10px;border:1px solid #e1e5ea;outline:none;background:#fff
     }
-    tbody td{padding:10px 12px;border-bottom:1px solid #f0f0f0;vertical-align:middle}
-    tbody tr:hover{background:#fffaf4}
-    td.actions{white-space:nowrap}
+    .fld input:focus,.fld select:focus{border-color:var(--primary);box-shadow:0 0 0 4px var(--ring)}
+    .row-actions{grid-column:1/-1; display:flex; gap:10px; flex-wrap:wrap; margin-top:6px}
+    .btn-sm{padding:10px 12px;border-radius:10px;font-weight:800}
+    .btn-ok{background:var(--ok);color:#fff}
+    .btn-ok:hover{filter:brightness(.95)}
+    .btn-danger{background:var(--danger);color:#fff}
+    .btn-danger:hover{filter:brightness(.95)}
 
-    /* Inputs dentro da tabela (edição) */
-    .tbl-input, .tbl-select{
-      width:100%; padding:8px 10px; border-radius:8px; border:1px solid #e1e5ea; background:#fff; font-size:14px;
+    /* Lista de usuários (accordion) */
+    .list{display:flex;flex-direction:column;gap:10px}
+    details.user{
+      border:1px solid #e9e9e9; border-radius:12px; background:#fff;
+      box-shadow:0 4px 16px rgba(0,0,0,.06); overflow:hidden;
     }
-    .tbl-input:focus, .tbl-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--ring)}
+    details.user[open]{box-shadow:0 8px 24px rgba(0,0,0,.08)}
+    summary{
+      list-style:none; cursor:pointer; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px;
+      background:linear-gradient(to right, #fff, #fffaf4);
+    }
+    summary::-webkit-details-marker{display:none}
+    .title{display:flex; flex-direction:column; gap:2px}
+    .title .name{font-weight:800; font-size:16px}
+    .title .email{font-size:13px; color:#6b7b8c}
     .chip{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px}
     .chip-admin{background:#ffe8e8;color:#b22222;border:1px solid #f2b3b3}
     .chip-user{background:#e8f7ff;color:#1565c0;border:1px solid #b6def8}
 
-    .btn-sm{padding:8px 10px;border-radius:8px;font-weight:700}
-    .btn-ok{background:var(--ok);color:#fff}
-    .btn-ok:hover{filter:brightness(.9)}
-    .btn-warn{background:var(--warn);color:#fff}
-    .btn-warn:hover{filter:brightness(.95)}
-    .btn-danger{background:var(--danger);color:#fff}
-    .btn-danger:hover{filter:brightness(.95)}
+    .content{padding:16px;border-top:1px solid #f0f0f0;display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:12px}
+    @media (max-width:720px){ .content{grid-template-columns:1fr} }
+    .waHint{font-size:12px;color:#6b7b8c}
 
     footer{text-align:center;padding:14px 10px;font-size:13px;color:#6b7b8c}
+
     @media (max-width:640px){
       header h1{font-size:20px}
       .controls{flex-direction:column;align-items:stretch}
       .btn{width:100%}
+      .count{margin-left:0}
     }
   </style>
 </head>
@@ -98,9 +113,10 @@
   </header>
 
   <main class="container">
+    <!-- Controles -->
     <section class="card">
-      <h2>Cadastros de Usuários</h2>
-      <p class="subtitle">Visualize, edite e exclua usuários. A senha não é exibida aqui.</p>
+      <h2>Usuários</h2>
+      <p class="subtitle">Clique no nome para ver/editar os dados. A senha não é exibida.</p>
 
       <div class="controls">
         <input id="filtro" type="text" placeholder="Filtrar por nome ou e-mail…" />
@@ -109,35 +125,54 @@
           <option value="Administrador">Administradores</option>
           <option value="Usuário">Usuários</option>
         </select>
+
         <button class="btn btn-outline" onclick="location.href='admin.html'">⬅️ Voltar ao Painel</button>
         <button class="btn btn-main" onclick="location.href='index.html'">🏠 Página Inicial</button>
+
+        <button class="btn btn-main" id="btnShowCreate">➕ Novo Usuário</button>
+        <span class="count" id="countLabel">0 usuários encontrados</span>
       </div>
     </section>
 
-    <section class="card">
-      <div class="table-wrap">
-        <table id="tabela">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>E-mail</th>
-              <th>Telefone</th>
-              <th>Sexo</th>
-              <th>CEP</th>
-              <th>Rua</th>
-              <th>Bairro</th>
-              <th>Nº</th>
-              <th>Compl.</th>
-              <th>Referência</th>
-              <th>Visita</th>
-              <th>Maps (URL)</th>
-              <th>Tipo</th>
-              <th class="actions">Ações</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
+    <!-- Card de criação -->
+    <section class="card" id="createCard">
+      <h2>Novo Usuário</h2>
+      <div class="grid">
+        <div class="fld"><label>Nome *</label><input id="c-nome"></div>
+        <div class="fld"><label>E-mail *</label><input id="c-email" type="email"></div>
+        <div class="fld"><label>Telefone</label><input id="c-telefone" placeholder="DDD + número (apenas dígitos)"></div>
+        <div class="fld"><label>Sexo</label>
+          <select id="c-sexo">
+            <option value="">Selecione…</option>
+            <option>MASCULINO</option><option>FEMININO</option>
+          </select>
+        </div>
+        <div class="fld"><label>CEP</label><input id="c-cep" maxlength="8"></div>
+        <div class="fld"><label>Rua</label><input id="c-rua"></div>
+        <div class="fld"><label>Bairro</label><input id="c-bairro"></div>
+        <div class="fld"><label>Número</label><input id="c-numero"></div>
+        <div class="fld"><label>Complemento</label><input id="c-complemento"></div>
+        <div class="fld"><label>Referência</label><input id="c-referencia"></div>
+        <div class="fld"><label>Aceita Visita?</label>
+          <select id="c-visita"><option>SIM</option><option>NÃO</option></select>
+        </div>
+        <div class="fld"><label>Maps (URL)</label><input id="c-maps" placeholder="https://..."></div>
+        <div class="fld"><label>Tipo de Usuário *</label>
+          <select id="c-tipo"><option>Usuário</option><option>Administrador</option></select>
+        </div>
+        <div class="fld"><label>Senha *</label><input id="c-senha" type="password"></div>
+        <div class="fld"><label>Confirmar Senha *</label><input id="c-confirma" type="password"></div>
+
+        <div class="row-actions">
+          <button class="btn btn-sm btn-ok" id="btnCreate">💾 Criar</button>
+          <button class="btn btn-sm btn-danger" id="btnCancelCreate">✖️ Cancelar</button>
+        </div>
       </div>
+    </section>
+
+    <!-- Lista/Accordion -->
+    <section class="card">
+      <div id="lista" class="list"></div>
     </section>
   </main>
 
@@ -157,157 +192,225 @@
       const reg=(cads||[]).find(x => (x.email||"").toLowerCase() === email);
       return !!reg && (reg.fixo===true || reg.isAdmin===true || reg.tipoUsuario==="Administrador");
     };
+    const escapeHtml = (s) => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;', '"':'&quot;', "'":'&#39;'}[m]));
+    const linkMaps = (url) => !url ? "" : `<a href="${escapeHtml(url)}" target="_blank" rel="noopener">Abrir</a>`;
+    const opt = (val, txt) => `<option value="${txt}" ${String(val||"")===txt?"selected":""}>${txt}</option>`;
 
     /* ========= Estado / Renderização ========= */
     let cadastros = [];
-    let editIndex = -1; // linha em edição
+    let aberto = -1; // índice do usuário aberto
 
-    function renderTabela(){
-      const tbody = document.getElementById("tbody");
+    function renderLista(){
+      const lista = document.getElementById("lista");
       const filtro = (document.getElementById("filtro").value || "").toLowerCase();
       const filtroTipo = document.getElementById("filtroTipo").value;
 
-      const linhas = cadastros
+      const filtrados = cadastros
         .map((u, idx) => ({u, idx}))
         .filter(({u}) => {
           const alvo = `${u.nome||""} ${(u.email||"")}`.toLowerCase();
           const passaTexto = !filtro || alvo.includes(filtro);
-          const tipo = u.tipoUsuario || (u.isAdmin ? "Administrador" : "Usuário");
-          const passaTipo  = !filtroTipo || filtroTipo === tipo;
+          const tipo = (u.tipoUsuario || (u.isAdmin ? "Administrador" : "Usuário"));
+          const passaTipo = !filtroTipo || filtroTipo === tipo;
           return passaTexto && passaTipo;
-        })
-        .map(({u, idx}) => {
-          const tipo = u.tipoUsuario || (u.isAdmin ? "Administrador" : "Usuário");
-          const chip = tipo === "Administrador"
-            ? `<span class="chip chip-admin">Administrador</span>`
-            : `<span class="chip chip-user">Usuário</span>`;
+        });
 
-          if(editIndex === idx){
-            // Linha em modo edição
-            return `
-              <tr data-i="${idx}">
-                <td><input class="tbl-input" value="${escapeHtml(u.nome||"")}" id="e-nome-${idx}"></td>
-                <td><input class="tbl-input" value="${escapeHtml(u.email||"")}" id="e-email-${idx}"></td>
-                <td><input class="tbl-input" value="${escapePhone(u.telefone||"")}" id="e-telefone-${idx}"></td>
-                <td>
-                  <select class="tbl-select" id="e-sexo-${idx}">
-                    ${opt(u.sexo,"MASCULINO")} ${opt(u.sexo,"FEMININO")}
-                  </select>
-                </td>
-                <td><input class="tbl-input" value="${escapeHtml(u.cep||"")}" id="e-cep-${idx}"></td>
-                <td><input class="tbl-input" value="${escapeHtml(u.rua||"")}" id="e-rua-${idx}"></td>
-                <td><input class="tbl-input" value="${escapeHtml(u.bairro||"")}" id="e-bairro-${idx}"></td>
-                <td><input class="tbl-input" value="${escapeHtml(u.numero||"")}" id="e-numero-${idx}"></td>
-                <td><input class="tbl-input" value="${escapeHtml(u.complemento||"")}" id="e-complemento-${idx}"></td>
-                <td><input class="tbl-input" value="${escapeHtml(u.referencia||"")}" id="e-referencia-${idx}"></td>
-                <td>
-                  <select class="tbl-select" id="e-visita-${idx}">
-                    ${opt(u.visita,"SIM")} ${opt(u.visita,"NÃO")}
-                  </select>
-                </td>
-                <td><input class="tbl-input" value="${escapeHtml(u.maps||"")}" id="e-maps-${idx}"></td>
-                <td>
-                  <select class="tbl-select" id="e-tipo-${idx}">
-                    ${opt(tipo,"Usuário")} ${opt(tipo,"Administrador")}
-                  </select>
-                </td>
-                <td class="actions">
-                  <button class="btn btn-sm btn-ok" onclick="salvar(${idx})">💾 Salvar</button>
-                  <button class="btn btn-sm btn-outline" onclick="cancelar()">↩️ Cancelar</button>
-                </td>
-              </tr>
-            `;
-          } else {
-            // Linha normal
-            return `
-              <tr data-i="${idx}">
-                <td>${escapeHtml(u.nome||"")}</td>
-                <td>${escapeHtml(u.email||"")}</td>
-                <td>${escapeHtml(u.telefone||"")}</td>
-                <td>${escapeHtml(u.sexo||"")}</td>
-                <td>${escapeHtml(u.cep||"")}</td>
-                <td>${escapeHtml(u.rua||"")}</td>
-                <td>${escapeHtml(u.bairro||"")}</td>
-                <td>${escapeHtml(u.numero||"")}</td>
-                <td>${escapeHtml(u.complemento||"")}</td>
-                <td>${escapeHtml(u.referencia||"")}</td>
-                <td>${escapeHtml(u.visita||"")}</td>
-                <td>${linkMaps(u.maps)}</td>
-                <td>${chip}</td>
-                <td class="actions">
-                  <button class="btn btn-sm btn-warn" onclick="editar(${idx})">✏️ Editar</button>
-                  <button class="btn btn-sm btn-danger" onclick="excluirUsuario(${idx})">🗑️ Excluir</button>
-                </td>
-              </tr>
-            `;
-          }
-        })
-        .join("");
+      // Atualiza contagem
+      document.getElementById("countLabel").textContent =
+        `${filtrados.length} ${filtrados.length===1 ? "usuário encontrado" : "usuários encontrados"}`;
 
-      tbody.innerHTML = linhas || `<tr><td colspan="14" style="text-align:center;color:#888;padding:18px">Nenhum registro encontrado.</td></tr>`;
+      const itens = filtrados.map(({u, idx}) => cardUsuario(u, idx)).join("");
+      lista.innerHTML = itens || `<div style="text-align:center;color:#888;padding:18px">Nenhum usuário encontrado.</div>`;
+
+      // Mantém o último aberto
+      if (aberto >= 0) {
+        const det = document.querySelector(`details[data-i="${aberto}"]`);
+        if(det) det.open = true;
+      }
+
+      // Atualiza os links do WhatsApp exibidos
+      filtrados.forEach(({idx}) => updateWa(idx));
     }
 
-    // Utilitários
-    const opt = (val, txt) => `<option value="${txt}" ${String(val||"")===txt?"selected":""}>${txt}</option>`;
-    const escapeHtml = (s) => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-    const escapePhone = (s) => String(s).replace(/[^\d+()-\s]/g,"");
-    const linkMaps = (url) => {
-      if(!url) return "";
-      const safe = escapeHtml(url);
-      return `<a href="${safe}" target="_blank" rel="noopener">Abrir</a>`;
-    };
+    function chipTipo(tipo){
+      return (tipo === "Administrador")
+        ? `<span class="chip chip-admin">Administrador</span>`
+        : `<span class="chip chip-user">Usuário</span>`;
+    }
 
-    function editar(i){ editIndex = i; renderTabela(); }
-    function cancelar(){ editIndex = -1; renderTabela(); }
+    function renderWaLink(raw){
+      const digits = String(raw||"").replace(/\D/g,'');
+      if(!/^\d{10,11}$/.test(digits)) return `<span class="waHint">Digite DDD + número para habilitar o WhatsApp</span>`;
+      const url = `https://wa.me/55${digits}`;
+      return `<a href="${url}" target="_blank" rel="noopener">Abrir WhatsApp</a>`;
+    }
+
+    function cardUsuario(u, idx){
+      const tipo = u.tipoUsuario || (u.isAdmin ? "Administrador" : "Usuário");
+
+      return `
+        <details class="user" data-i="${idx}" ${aberto===idx?"open":""} onclick="handleOpen(event, ${idx})">
+          <summary>
+            <div class="title">
+              <span class="name">${escapeHtml(u.nome||"(Sem nome)")}</span>
+              <span class="email">${escapeHtml(u.email||"")}</span>
+            </div>
+            <div>${chipTipo(tipo)}</div>
+          </summary>
+
+          <div class="content">
+            <div class="fld">
+              <label>Nome</label>
+              <input id="n-${idx}" value="${escapeHtml(u.nome||"")}">
+            </div>
+            <div class="fld">
+              <label>E-mail</label>
+              <input id="e-${idx}" value="${escapeHtml(u.email||"")}">
+            </div>
+            <div class="fld">
+              <label>Telefone (duplo clique para abrir no WhatsApp)</label>
+              <input id="t-${idx}" value="${escapeHtml(u.telefone||"")}" oninput="updateWa(${idx})" ondblclick="openWaFromInput(${idx})">
+              <small id="wa-${idx}">${renderWaLink(u.telefone)}</small>
+            </div>
+            <div class="fld">
+              <label>Sexo</label>
+              <select id="sx-${idx}">
+                ${opt(u.sexo,"MASCULINO")}${opt(u.sexo,"FEMININO")}
+              </select>
+            </div>
+            <div class="fld">
+              <label>CEP</label>
+              <input id="c-${idx}" value="${escapeHtml(u.cep||"")}">
+            </div>
+            <div class="fld">
+              <label>Rua</label>
+              <input id="r-${idx}" value="${escapeHtml(u.rua||"")}">
+            </div>
+            <div class="fld">
+              <label>Bairro</label>
+              <input id="b-${idx}" value="${escapeHtml(u.bairro||"")}">
+            </div>
+            <div class="fld">
+              <label>Número</label>
+              <input id="nu-${idx}" value="${escapeHtml(u.numero||"")}">
+            </div>
+            <div class="fld">
+              <label>Complemento</label>
+              <input id="co-${idx}" value="${escapeHtml(u.complemento||"")}">
+            </div>
+            <div class="fld">
+              <label>Referência</label>
+              <input id="rf-${idx}" value="${escapeHtml(u.referencia||"")}">
+            </div>
+            <div class="fld">
+              <label>Aceita Visita?</label>
+              <select id="v-${idx}">
+                ${opt(u.visita,"SIM")}${opt(u.visita,"NÃO")}
+              </select>
+            </div>
+            <div class="fld">
+              <label>Maps (URL)</label>
+              <input id="m-${idx}" value="${escapeHtml(u.maps||"")}" placeholder="https://...">
+              <small>${linkMaps(u.maps)}</small>
+            </div>
+            <div class="fld">
+              <label>Tipo de Usuário</label>
+              <select id="tp-${idx}">
+                ${opt(tipo,"Usuário")}${opt(tipo,"Administrador")}
+              </select>
+            </div>
+
+            <div class="row-actions">
+              <button class="btn btn-sm btn-ok" onclick="salvar(${idx})">💾 Salvar</button>
+              <button class="btn btn-sm btn-danger" onclick="excluirUsuario(${idx})">🗑️ Excluir</button>
+              <button class="btn btn-sm btn-outline" onclick="cancelarAbrir(${idx})">↩️ Fechar</button>
+            </div>
+          </div>
+        </details>
+      `;
+    }
+
+    // Atualiza link do WhatsApp conforme digitação
+    function updateWa(idx){
+      const tel = (document.getElementById(`t-${idx}`)?.value || "").replace(/\D/g,'');
+      const small = document.getElementById(`wa-${idx}`);
+      if(!small) return;
+      if(/^\d{10,11}$/.test(tel)){
+        small.innerHTML = `<a href="https://wa.me/55${tel}" target="_blank" rel="noopener">Abrir WhatsApp</a>`;
+      } else {
+        small.innerHTML = `<span class="waHint">Digite DDD + número para habilitar o WhatsApp</span>`;
+      }
+    }
+    // Ação de atalho: duplo clique no campo telefone
+    function openWaFromInput(idx){
+      const tel = (document.getElementById(`t-${idx}`)?.value || "").replace(/\D/g,'');
+      if(/^\d{10,11}$/.test(tel)){
+        window.open(`https://wa.me/55${tel}`, "_blank");
+      } else {
+        alert("Informe DDD + número (10 ou 11 dígitos) para abrir o WhatsApp.");
+      }
+    }
+
+    function handleOpen(ev, idx){
+      const tag = ev.target?.tagName?.toLowerCase();
+      if(tag && ["input","select","button","small","a","label"].includes(tag)) return;
+      aberto = (aberto === idx ? -1 : idx);
+    }
+
+    function cancelarAbrir(idx){
+      const det = document.querySelector(`details[data-i="${idx}"]`);
+      if(det){ det.open = false; }
+      aberto = -1;
+    }
 
     function salvar(i){
       const original = cadastros[i];
       if(!original) return;
 
-      // ler valores da linha
       const get = id => document.getElementById(id)?.value || "";
       const novo = {
-        ...original, // preserva senha e flags não editadas
-        nome: get(`e-nome-${i}`).trim(),
-        email: get(`e-email-${i}`).trim().toLowerCase(),
-        telefone: get(`e-telefone-${i}`).trim(),
-        sexo: get(`e-sexo-${i}`),
-        cep: get(`e-cep-${i}`).trim(),
-        rua: get(`e-rua-${i}`).trim(),
-        bairro: get(`e-bairro-${i}`).trim(),
-        numero: get(`e-numero-${i}`).trim(),
-        complemento: get(`e-complemento-${i}`).trim(),
-        referencia: get(`e-referencia-${i}`).trim(),
-        visita: get(`e-visita-${i}`),
-        maps: get(`e-maps-${i}`).trim(),
-        tipoUsuario: get(`e-tipo-${i}`) || "Usuário",
+        ...original,
+        nome: get(`n-${i}`).trim(),
+        email: get(`e-${i}`).trim().toLowerCase(),
+        telefone: get(`t-${i}`).trim(),
+        sexo: get(`sx-${i}`),
+        cep: get(`c-${i}`).trim(),
+        rua: get(`r-${i}`).trim(),
+        bairro: get(`b-${i}`).trim(),
+        numero: get(`nu-${i}`).trim(),
+        complemento: get(`co-${i}`).trim(),
+        referencia: get(`rf-${i}`).trim(),
+        visita: get(`v-${i}`),
+        maps: get(`m-${i}`).trim(),
+        tipoUsuario: get(`tp-${i}`) || "Usuário",
       };
-      novo.isAdmin = (novo.tipoUsuario === "Administrador") || !!original.isAdmin; // mantém se já era admin por flag
-      // mantém 'fixo' como veio (não editamos essa proteção aqui)
 
-      // validações
       if(!novo.nome){ alert("Informe o nome."); return; }
       if(!novo.email){ alert("Informe o e-mail."); return; }
-      // e-mail único
       const existe = cadastros.some((u,idx) => idx!==i && (u.email||"").toLowerCase() === novo.email);
       if(existe){ alert("Já existe um usuário com este e-mail."); return; }
 
-      // aplica e salva
+      // Administração: mantém fixo; define isAdmin conforme tipo ou fixo
+      novo.fixo = original.fixo === true ? true : original.fixo;
+      const forceAdminByFixed = novo.fixo === true;
+      novo.isAdmin = forceAdminByFixed || (novo.tipoUsuario === "Administrador");
+
       cadastros[i] = novo;
       setCadastros(cadastros);
 
-      // se for o usuário logado, atualiza sessão
+      // Atualiza sessão se editou o próprio usuário
       const atual = getUser();
       if(atual && (atual.email||"").toLowerCase() === (original.email||"").toLowerCase()){
         localStorage.setItem("usuarioLogado", JSON.stringify({
-          ...atual,
-          ...novo,
-          senha: atual.senha // nunca alterar aqui
+          ...atual, ...novo, senha: atual.senha
         }));
       }
 
-      editIndex = -1;
-      renderTabela();
+      alert("Dados salvos com sucesso!");
+      renderLista();
+      aberto = i;
+      const det = document.querySelector(`details[data-i="${i}"]`);
+      if(det){ det.open = true; }
     }
 
     function excluirUsuario(i){
@@ -319,13 +422,11 @@
         alert("Este usuário administrador fixo não pode ser excluído.");
         return;
       }
-
       if(!confirm(`Excluir o usuário "${alvo.nome}" (${alvo.email})?`)) return;
 
       cadastros.splice(i,1);
       setCadastros(cadastros);
 
-      // se excluiu o próprio usuário, encerra sessão
       const atual = getUser();
       if(atual && (atual.email||"").toLowerCase() === email){
         localStorage.removeItem("usuarioLogado");
@@ -334,7 +435,68 @@
         return;
       }
 
-      renderTabela();
+      alert("Usuário excluído.");
+      aberto = -1;
+      renderLista();
+    }
+
+    /* ========= Criação de novo usuário ========= */
+    function toggleCreate(show){
+      document.getElementById("createCard").style.display = show ? "block" : "none";
+    }
+    function clearCreateForm(){
+      ["c-nome","c-email","c-telefone","c-sexo","c-cep","c-rua","c-bairro","c-numero","c-complemento","c-referencia","c-visita","c-maps","c-tipo","c-senha","c-confirma"].forEach(id=>{
+        const el = document.getElementById(id);
+        if(!el) return;
+        if(el.tagName.toLowerCase()==="select"){ el.selectedIndex = 0; }
+        else el.value = "";
+      });
+      document.getElementById("c-tipo").value = "Usuário";
+      document.getElementById("c-visita").value = "SIM";
+    }
+    function createUser(){
+      const nome = document.getElementById("c-nome").value.trim();
+      const email = document.getElementById("c-email").value.trim().toLowerCase();
+      const telefone = document.getElementById("c-telefone").value.trim();
+      const sexo = document.getElementById("c-sexo").value;
+      const cep = document.getElementById("c-cep").value.trim();
+      const rua = document.getElementById("c-rua").value.trim();
+      const bairro = document.getElementById("c-bairro").value.trim();
+      const numero = document.getElementById("c-numero").value.trim();
+      const complemento = document.getElementById("c-complemento").value.trim();
+      const referencia = document.getElementById("c-referencia").value.trim();
+      const visita = document.getElementById("c-visita").value;
+      const maps = document.getElementById("c-maps").value.trim();
+      const tipoUsuario = document.getElementById("c-tipo").value;
+      const senha = document.getElementById("c-senha").value;
+      const confirma = document.getElementById("c-confirma").value;
+
+      if(!nome || !email || !senha || !confirma){
+        alert("Preencha Nome, E-mail e Senha.");
+        return;
+      }
+      if(senha !== confirma){
+        alert("As senhas não coincidem.");
+        return;
+      }
+      if(cadastros.some(u => (u.email||"").toLowerCase() === email)){
+        alert("Já existe um usuário com este e-mail.");
+        return;
+      }
+
+      const novo = {
+        nome, email, telefone, sexo, cep, rua, bairro, numero, complemento, referencia,
+        visita, maps, senha,
+        tipoUsuario, isAdmin: (tipoUsuario === "Administrador")
+      };
+
+      cadastros.push(novo);
+      setCadastros(cadastros);
+
+      alert("Usuário criado com sucesso!");
+      clearCreateForm();
+      toggleCreate(false);
+      renderLista();
     }
 
     /* ========= Inicialização / proteção de rota ========= */
@@ -352,7 +514,7 @@
         return;
       }
 
-      // Preenche barra do usuário
+      // Barra do usuário
       const bar = document.getElementById("userBar");
       const meta = document.getElementById("userMeta");
       meta.innerHTML = `
@@ -362,19 +524,27 @@
       `;
       bar.style.display = "flex";
 
-      // Logout
       document.getElementById("logoutBtn").addEventListener("click", () => {
         localStorage.removeItem("usuarioLogado");
         alert("Você realizou o logoff.");
         location.href = "index.html";
       });
 
-      // Filtro
-      document.getElementById("filtro").addEventListener("input", renderTabela);
-      document.getElementById("filtroTipo").addEventListener("change", renderTabela);
+      // Filtros e contagem
+      document.getElementById("filtro").addEventListener("input", renderLista);
+      document.getElementById("filtroTipo").addEventListener("change", renderLista);
 
-      // Render inicial
-      renderTabela();
+      // Criar novo usuário
+      document.getElementById("btnShowCreate").addEventListener("click", () => {
+        const card = document.getElementById("createCard");
+        const show = card.style.display !== "block";
+        toggleCreate(show);
+        if(show) document.getElementById("c-nome").focus();
+      });
+      document.getElementById("btnCreate").addEventListener("click", createUser);
+      document.getElementById("btnCancelCreate").addEventListener("click", () => { clearCreateForm(); toggleCreate(false); });
+
+      renderLista();
     });
   </script>
 </body>
