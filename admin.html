@@ -6,21 +6,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body{font-family:Arial,sans-serif;background:#f4f6f8;margin:0}
-    header{background:#2c3e50;color:#fff;padding:20px 16px;
+    header{
+      background:#2c3e50;color:#fff;padding:20px 16px;
       display:flex;justify-content:space-between;align-items:center;
-      box-shadow:0 2px 10px rgba(0,0,0,.15)}
+      box-shadow:0 2px 10px rgba(0,0,0,.15)
+    }
     header h1{margin:0;font-size:22px}
     .user-info{font-size:14px;text-align:right}
     .user-info span{display:block}
-    .logout{background:#e74c3c;color:#fff;border:none;padding:6px 10px;
-      border-radius:6px;cursor:pointer;font-size:12px;margin-top:4px}
+    .logout{
+      background:#e74c3c;color:#fff;border:none;padding:6px 10px;
+      border-radius:6px;cursor:pointer;font-size:12px;margin-top:4px
+    }
     .logout:hover{background:#c0392b}
-    .container{max-width:800px;margin:40px auto;background:#fff;padding:24px;
-      border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.1);text-align:center}
+
+    .container{
+      max-width:800px;margin:40px auto;background:#fff;padding:24px;
+      border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.1);text-align:center
+    }
     h2{margin:0 0 20px 0}
     .actions{display:flex;flex-direction:column;gap:12px;margin-top:20px}
-    .btn{padding:14px;border:none;border-radius:10px;font-size:16px;font-weight:bold;
-      cursor:pointer;transition:background .3s;width:100%}
+    .btn{
+      padding:14px;border:none;border-radius:10px;font-size:16px;font-weight:bold;
+      cursor:pointer;transition:background .3s;width:100%
+    }
     .btn-secondary{background:#3498db;color:#fff}
     .btn-secondary:hover{background:#2980b9}
     .btn-accent{background:#8e44ad;color:#fff}
@@ -47,21 +56,44 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const userLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
+    // Helper: determina se um usuário é admin
+    function isAdmin(user, cadastros) {
+      if (!user) return false;
 
-      // Se não estiver logado → redireciona
-      if(!userLogado){
+      const email = (user.email || "").toLowerCase();
+      const adminsFixos = ["leoguerramaia@gmail.com", "admin@admin.com.br", "admin"];
+
+      // Admin por e-mail fixo
+      if (adminsFixos.includes(email)) return true;
+
+      // Procura cadastro completo para checar flags
+      const registro = (cadastros || []).find(u => (u.email || "").toLowerCase() === email);
+      if (!registro) return false;
+
+      return registro.fixo === true || registro.isAdmin === true;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Verifica login
+      const userLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
+      if (!userLogado) {
         alert("⚠️ Você precisa estar logado para acessar esta página.");
         window.location.replace("login.html");
         return;
       }
 
-      // Primeiro nome
-      const primeiroNome = (userLogado.nome || "Usuário").split(" ")[0];
-      alert("👋 Bem-vindo(a), " + primeiroNome + "!");
+      // Carrega cadastros para verificar privilégios
+      const cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
 
-      // Info no canto superior direito
+      // Se não for admin, redireciona
+      if (!isAdmin(userLogado, cadastros)) {
+        alert("⛔ Acesso restrito a administradores.");
+        window.location.replace("usuariologado.html");
+        return;
+      }
+
+      // Exibe info do usuário
+      const primeiroNome = (userLogado.nome || "Usuário").split(" ")[0];
       const info = document.getElementById("userInfo");
       info.innerHTML = `
         <span><strong>${primeiroNome}</strong></span>
@@ -69,10 +101,10 @@
         <button class="logout" id="logoutBtn">Sair</button>
       `;
 
-      // Botão de logout
+      // Logout
       document.getElementById("logoutBtn").addEventListener("click", () => {
         localStorage.removeItem("usuarioLogado");
-        window.location.href = "index.html";
+        window.location.href = "login.html";
       });
     });
   </script>
