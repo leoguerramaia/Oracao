@@ -6,178 +6,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root{
-      --bg:#fff7f2;
-      --card:#ffffff;
-      --text:#2c3e50;
-      --muted:#6b7b8c;
-      --primary:#b22222;        /* vermelho queimado */
-      --primary-hov:#800000;    /* vinho escuro */
-      --accent:#ff4500;         /* laranja vivo */
-      --accent-hov:#e03c00;     /* laranja escuro */
-      --gold:#ffd700;           /* dourado */
-      --ring:rgba(178,34,34,.35);
+      --bg:#fff7f2; --card:#ffffff; --text:#2c3e50; --muted:#6b7b8c;
+      --primary:#b22222; --primary-hov:#800000; --accent:#ff4500; --accent-hov:#e03c00;
+      --gold:#ffd700; --ring:rgba(178,34,34,.35);
     }
-
     *{box-sizing:border-box}
-
-    body{
-      margin:0;
-      font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-    }
-
-    /* Cabeçalho no padrão do index.html */
-    header{
-      position:relative;
-      background:var(--primary);
-      color:var(--gold);
-      padding:20px 16px;
-      text-align:center;
-      box-shadow:0 2px 10px rgba(0,0,0,.15);
-      text-shadow:0 0 6px rgba(255,215,0,0.6);
-    }
-    header h1{
-      margin:0;
-      font-size:24px;
-      letter-spacing:.5px;
-    }
-
-    /* Barra do usuário no canto superior direito */
-    .userbar{
-      position:absolute;
-      right:16px;
-      top:50%;
-      transform:translateY(-50%);
-      display:flex;
-      align-items:center;
-      gap:12px;
-      color:#fff;
-    }
-    .user-meta{
-      text-align:right;
-      line-height:1.2;
-      font-size:13px;
-      color:#fff;
-    }
-    .user-meta strong{display:block; color:#fff}
-    .logout{
-      background:var(--accent);
-      color:#fff;
-      border:none;
-      padding:8px 12px;
-      border-radius:8px;
-      cursor:pointer;
-      font-weight:700;
-      transition:.25s;
-      box-shadow:0 6px 16px rgba(0,0,0,.12);
-    }
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+    header{position:relative;background:var(--primary);color:var(--gold);padding:20px 16px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.15);text-shadow:0 0 6px rgba(255,215,0,.6)}
+    header h1{margin:0;font-size:24px;letter-spacing:.5px}
+    .userbar{position:absolute;right:16px;top:50%;transform:translateY(-50%);display:none;align-items:center;gap:12px;color:#fff}
+    .user-meta{text-align:right;line-height:1.2;font-size:13px;color:#fff}
+    .user-meta strong{display:block;color:#fff}
+    .badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:#ffffff22;color:#fff;margin-top:4px}
+    .logout{background:var(--accent);color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700;transition:.25s;box-shadow:0 6px 16px rgba(0,0,0,.12)}
     .logout:hover{background:var(--accent-hov)}
-    .badge{
-      display:inline-block;
-      font-size:11px;
-      padding:2px 8px;
-      border-radius:999px;
-      background:#ffffff22;
-      color:#fff;
-      margin-top:4px;
-    }
-
-    /* Conteúdo */
-    .container{
-      max-width:900px;
-      width:100%;
-      margin:28px auto;
-      padding:0 16px;
-      flex:1;
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-    }
-
-    .card{
-      background:var(--card);
-      border-radius:14px;
-      padding:24px;
-      box-shadow:0 12px 30px rgba(0,0,0,.08);
-      border:1px solid rgba(0,0,0,.04);
-      width:100%;
-      text-align:center;
-    }
-
-    .card h2{
-      margin:0 0 6px 0;
-      font-size:22px;
-      color:var(--primary);
-    }
-    .card p{color:var(--muted); margin:6px 0 20px 0}
-
-    /* Grid de ações */
-    .actions{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(200px, 1fr));
-      gap:14px;
-      margin-top:8px;
-    }
-    @media (max-width:680px){
-      .actions{grid-template-columns: 1fr;}
-    }
-
-    .btn{
-      appearance:none;
-      border:none;
-      border-radius:12px;
-      padding:14px 16px;
-      cursor:pointer;
-      font-weight:800;
-      letter-spacing:.3px;
-      font-size:16px;
-      transition:.25s;
-      box-shadow:0 8px 20px rgba(0,0,0,.08);
-      width:100%;
-    }
+    .container{max-width:900px;width:100%;margin:28px auto;padding:0 16px;flex:1;display:flex;align-items:flex-start;justify-content:center}
+    .card{background:var(--card);border-radius:14px;padding:24px;box-shadow:0 12px 30px rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.04);width:100%;text-align:center}
+    .card h2{margin:0 0 6px 0;font-size:22px;color:var(--primary)}
+    .card p{color:var(--muted);margin:6px 0 20px 0}
+    .actions{display:grid;grid-template-columns:repeat(2,minmax(200px,1fr));gap:14px;margin-top:8px}
+    @media (max-width:680px){.actions{grid-template-columns:1fr}}
+    .btn{appearance:none;border:none;border-radius:12px;padding:14px 16px;cursor:pointer;font-weight:800;letter-spacing:.3px;font-size:16px;transition:.25s;box-shadow:0 8px 20px rgba(0,0,0,.08);width:100%}
     .btn:active{transform:translateY(1px)}
-
-    .btn-main{
-      background:var(--primary);
-      color:#fff;
-    }
-    .btn-main:hover{background:var(--primary-hov)}
-
-    .btn-accent{
-      background:var(--accent);
-      color:#fff;
-    }
-    .btn-accent:hover{background:var(--accent-hov)}
-
-    .btn-outline{
-      background:#fff;
-      color:var(--accent);
-      border:1px solid #e1e5ea;
-    }
-    .btn-outline:hover{
-      background:#f7f9fb;
-      color:var(--accent-hov);
-    }
-
-    /* Rodapé simples */
-    footer{
-      text-align:center;
-      padding:14px 10px;
-      font-size:13px;
-      color:#6b7b8c;
-    }
+    .btn-main{background:var(--primary);color:#fff}.btn-main:hover{background:var(--primary-hov)}
+    .btn-accent{background:var(--accent);color:#fff}.btn-accent:hover{background:var(--accent-hov)}
+    .btn-outline{background:#fff;color:var(--accent);border:1px solid #e1e5ea}.btn-outline:hover{background:#f7f9fb;color:var(--accent-hov)}
+    footer{text-align:center;padding:14px 10px;font-size:13px;color:#6b7b8c}
   </style>
 </head>
 <body>
   <header>
     <h1>⚙️ Administração</h1>
-
-    <!-- Barra de usuário (renderizada via JS) -->
-    <div class="userbar" id="userBar" style="display:none;">
+    <div class="userbar" id="userBar">
       <div class="user-meta" id="userMeta"></div>
       <button class="logout" id="logoutBtn">Sair</button>
     </div>
@@ -197,74 +57,50 @@
     </section>
   </main>
 
-  <footer>
-    Ministério PGM • Pedidos de Oração
-  </footer>
+  <footer>Ministério PGM • Pedidos de Oração</footer>
 
   <script>
-    /* =============== Helpers de autenticação e perfil =============== */
-    function getUsuarioLogado(){
-      try { return JSON.parse(localStorage.getItem("usuarioLogado")); }
-      catch { return null; }
-    }
+    // ===== Helpers =====
+    const ADMINS_FIXOS = ["leoguerramaia@gmail.com","admin@admin.com.br","admin"];
+    const getUser = () => { try{return JSON.parse(localStorage.getItem("usuarioLogado"))}catch{return null} };
+    const getCadastros = () => { try{return JSON.parse(localStorage.getItem("cadastrosUsuarios"))||[]}catch{return[]} };
+    const isAdmin = (u,cads) => {
+      if(!u) return false;
+      const email=(u.email||"").toLowerCase();
+      if(ADMINS_FIXOS.includes(email)) return true;
+      const reg=cads.find(x=>(x.email||"").toLowerCase()===email);
+      return !!reg && (reg.fixo===true || reg.isAdmin===true);
+    };
+    const firstName = n => (n||"Usuário").trim().split(" ")[0];
 
-    function getCadastros(){
-      try { return JSON.parse(localStorage.getItem("cadastrosUsuarios")) || []; }
-      catch { return []; }
-    }
-
-    function isAdmin(user, cadastros){
-      if(!user) return false;
-      const email = (user.email || "").toLowerCase();
-      const adminsFixos = ["leoguerramaia@gmail.com","admin@admin.com.br","admin"];
-      if(adminsFixos.includes(email)) return true;
-
-      const reg = cadastros.find(u => (u.email || "").toLowerCase() === email);
-      if(!reg) return false;
-      return reg.fixo === true || reg.isAdmin === true;
-    }
-
-    function perfilUsuario(user, cadastros){
-      return isAdmin(user, cadastros) ? "Administrador" : "Usuário";
-    }
-
-    function primeiroNome(nome){
-      return (nome || "Usuário").trim().split(" ")[0];
-    }
-
-    /* =============== Proteção de rota e barra do usuário =============== */
+    // ===== Proteção de rota + barra do usuário =====
     document.addEventListener("DOMContentLoaded", () => {
-      const user = getUsuarioLogado();
+      const user = getUser();
       if(!user){
         alert("⚠️ Você precisa estar logado para acessar esta página.");
-        window.location.replace("login.html");
+        location.replace("login.html");
         return;
       }
-
       const cadastros = getCadastros();
-      // Bloqueia quem não é admin
       if(!isAdmin(user, cadastros)){
         alert("⛔ Acesso restrito a administradores.");
-        window.location.replace("usuariologado.html");
+        location.replace("usuariologado.html");
         return;
       }
 
-      // Preenche a barra do usuário (fica visível em todas as páginas onde você incluir este bloco)
       const bar = document.getElementById("userBar");
       const meta = document.getElementById("userMeta");
-      const perfil = perfilUsuario(user, cadastros);
       meta.innerHTML = `
-        <strong>${primeiroNome(user.nome)}</strong>
-        <span>${user.email || ""}</span>
-        <span class="badge">${perfil}</span>
+        <strong>${firstName(user.nome)}</strong>
+        <span>${user.email||""}</span>
+        <span class="badge">Administrador</span>
       `;
       bar.style.display = "flex";
 
-      // Logoff
       document.getElementById("logoutBtn").addEventListener("click", () => {
         localStorage.removeItem("usuarioLogado");
         alert("Você realizou o logoff.");
-        window.location.href = "index.html";
+        location.href = "index.html";
       });
     });
   </script>
