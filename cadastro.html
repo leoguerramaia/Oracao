@@ -75,15 +75,22 @@
     .row{display:flex;gap:12px;flex-wrap:wrap}
     .row>div{flex:1;min-width:180px}
 
+    /* Ajuste dos radios */
     .radios{
       display:flex;
-      gap:20px;
       flex-wrap:wrap;
+      gap:16px;
     }
     .radio-option{
       display:flex;
       align-items:center;
-      gap:6px;
+      gap:6px;         /* espaço só entre botão e texto */
+      font-size:15px;
+      cursor:pointer;
+    }
+    .radio-option input{
+      accent-color:var(--primary);
+      margin:0;
     }
 
     .preview{font-size:14px}
@@ -102,7 +109,7 @@
       button{font-size:14px;padding:10px}
       .row{flex-direction:column}
       .row>div{min-width:100%}
-      .radios{flex-direction:column;gap:10px} /* Ajuste para SEXO e VISITA */
+      .radios{flex-direction:column;gap:8px} /* SEXO e VISITA em coluna */
     }
   </style>
 </head>
@@ -149,8 +156,8 @@
 
         <label>Aceita Visita?<span class="required">*</span></label>
         <div class="radios">
-          <label class="radio-option"><input type="radio" name="visita" value="SIM" required>SIM</label>
-          <label class="radio-option"><input type="radio" name="visita" value="NÃO" required>NÃO</label>
+          <label class="radio-option"><input type="radio" name="visita" value="SIM" required> SIM</label>
+          <label class="radio-option"><input type="radio" name="visita" value="NÃO" required> NÃO</label>
         </div>
 
         <label for="maps">URL do Google Maps:</label>
