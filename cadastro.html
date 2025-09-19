@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Cadastro - Pedidos de Oração</title>
+  <title>Cadastro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root{
@@ -10,257 +10,152 @@
       --card:#ffffff;
       --text:#2c3e50;
       --muted:#6b7b8c;
-      --primary:#b22222;
-      --primary-hov:#800000;
-      --accent:#ff4500;
-      --accent-hov:#e03c00;
-      --ring:rgba(178,34,34,.35);
+      --primary:#b22222;     /* vermelho queimado */
+      --primary-hov:#800000; /* vinho escuro */
+      --accent:#ff4500;      /* laranja vivo */
+      --accent-hov:#e03c00;  /* laranja escuro */
+      --ring: rgba(178,34,34,0.4);
     }
 
-    * { box-sizing: border-box; }
-
-    body{
-      margin:0;
-      font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:var(--bg);
-      color:var(--text);
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
     }
 
-    header{
-      background:var(--primary);
-      color:#ffd700;
-      padding:20px;
-      text-align:center;
-      box-shadow:0 2px 10px rgba(0,0,0,.15);
-      text-shadow:0 0 6px rgba(255,215,0,0.6);
-    }
-    header h1{margin:0;font-size:24px;letter-spacing:.5px}
-
-    .container{
-      max-width:720px;
-      margin:32px auto;
-      padding:0 16px;
+    header {
+      background: var(--primary);
+      color: white;
+      text-align: center;
+      padding: 14px;
+      font-size: 22px;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
-    .card{
-      background:var(--card);
-      border-radius:14px;
-      padding:24px;
-      box-shadow:0 12px 30px rgba(0,0,0,.08);
-      border:1px solid rgba(0,0,0,.04);
+    header span {
+      margin-right: 8px;
     }
 
-    form{display:flex;flex-direction:column;gap:12px}
-
-    label{display:block;font-weight:600;margin-top:8px}
-    label .required{color:var(--primary);margin-left:4px}
-
-    input,select,button{
-      width:100%;
-      padding:12px 14px;
-      border-radius:10px;
-      font-size:15px;
-    }
-    input,select{border:1px solid #e1e5ea;outline:none;background:#fff}
-    input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 4px var(--ring)}
-
-    .erro{color:var(--primary);font-size:13px;display:none}
-
-    button{border:none;font-weight:700;cursor:pointer;transition:.3s}
-    .btn-main{background:var(--primary);color:#fff}
-    .btn-main:hover{background:var(--primary-hov)}
-    .btn-home{background:#fff;color:var(--accent);border:1px solid #e1e5ea}
-    .btn-home:hover{background:#f7f9fb;color:var(--accent-hov)}
-
-    .row{display:flex;gap:12px;flex-wrap:wrap}
-    .row>div{flex:1;min-width:180px}
-
-    /* Ajuste dos radios */
-    .radios{
-      display:flex;
-      flex-wrap:wrap;
-      gap:16px;
-    }
-    .radio-option{
-      display:flex;
-      align-items:center;
-      gap:6px;         /* espaço só entre botão e texto */
-      font-size:15px;
-      cursor:pointer;
-    }
-    .radio-option input{
-      accent-color:var(--primary);
-      margin:0;
+    form {
+      max-width: 500px;
+      margin: 20px auto;
+      background: var(--card);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
-    .preview{font-size:14px}
-    .preview a{color:var(--primary);text-decoration:none}
-
-    .visually-hidden{
-      position:absolute !important;
-      width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
-      clip:rect(0 0 0 0);white-space:nowrap;border:0;
+    label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 4px;
+      font-weight: bold;
     }
 
-    @media (max-width:768px){
-      header h1{font-size:20px}
-      .container{margin:16px auto}
-      .card{padding:18px}
-      button{font-size:14px;padding:10px}
-      .row{flex-direction:column}
-      .row>div{min-width:100%}
-      .radios{flex-direction:column;gap:8px} /* SEXO e VISITA em coluna */
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px var(--ring);
+    }
+
+    /* Grupo de botões radio */
+    .radio-group {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin: 8px 0;
+    }
+
+    .radio-group label {
+      font-weight: normal;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .radio-group input {
+      accent-color: var(--primary);
+      margin: 0;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background: var(--primary);
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background .3s;
+    }
+
+    button:hover {
+      background: var(--primary-hov);
+    }
+
+    /* Responsividade */
+    @media (max-width:600px){
+      .radio-group {
+        flex-direction: column;
+        gap: 10px;
+      }
     }
   </style>
 </head>
 <body>
-  <header><h1>📝 Cadastro</h1></header>
-  <main class="container">
-    <section class="card">
-      <form id="formCadastro">
-        <label for="nome">Nome:<span class="required">*</span></label>
-        <input type="text" id="nome" required>
+  <header>
+    <span>📋</span> Cadastro
+  </header>
 
-        <label for="apelido">Como Gosta de Ser Chamado:</label>
-        <input type="text" id="apelido" placeholder="Ex: Leo, Mariazinha, Pastor João">
+  <form action="#" method="post">
+    <label for="nome">Nome: <span style="color:red">*</span></label>
+    <input type="text" id="nome" name="nome" required>
 
-        <label>Sexo:<span class="required">*</span></label>
-        <div class="radios">
-          <label class="radio-option"><input type="radio" name="sexo" value="MASCULINO" required> MASCULINO</label>
-          <label class="radio-option"><input type="radio" name="sexo" value="FEMININO" required> FEMININO</label>
-        </div>
+    <label for="chamado">Como Gosta de Ser Chamado:</label>
+    <input type="text" id="chamado" name="chamado" placeholder="Ex: Leo, Mariazinha, Pastor João">
 
-        <label for="telefone">Telefone:<span class="required">*</span></label>
-        <input type="tel" id="telefone" pattern="\d{10,11}" required>
-        <div id="whatsLink" class="preview"></div>
+    <label>Sexo: <span style="color:red">*</span></label>
+    <div class="radio-group">
+      <label><input type="radio" name="sexo" value="MASC" required> Masculino</label>
+      <label><input type="radio" name="sexo" value="FEM" required> Feminino</label>
+    </div>
 
-        <label for="email">E-mail:<span class="required">*</span></label>
-        <input type="email" id="email" required>
-        <div id="emailErro" class="erro">❌ Já existe um cadastro com este e-mail.</div>
+    <label for="telefone">Telefone: <span style="color:red">*</span></label>
+    <input type="tel" id="telefone" name="telefone" required>
 
-        <label for="cep">CEP:</label>
-        <input type="text" id="cep" maxlength="8" onblur="buscarCEP()">
+    <label for="email">E-mail: <span style="color:red">*</span></label>
+    <input type="email" id="email" name="email" required>
 
-        <div id="enderecoAuto" style="display:none;">
-          <label for="rua">Rua:</label><input type="text" id="rua">
-          <label for="bairro">Bairro:</label><input type="text" id="bairro">
-        </div>
+    <label for="cep">CEP:</label>
+    <input type="text" id="cep" name="cep">
 
-        <div class="row">
-          <div><label for="numero">Número:</label><input type="text" id="numero"></div>
-          <div><label for="complemento">Complemento:</label><input type="text" id="complemento"></div>
-        </div>
+    <label for="endereco">Endereço:</label>
+    <input type="text" id="endereco" name="endereco">
 
-        <label for="referencia">Ponto de Referência:</label>
-        <input type="text" id="referencia">
+    <label for="cidade">Cidade:</label>
+    <input type="text" id="cidade" name="cidade">
 
-        <label>Aceita Visita?<span class="required">*</span></label>
-        <div class="radios">
-          <label class="radio-option"><input type="radio" name="visita" value="SIM" required> SIM</label>
-          <label class="radio-option"><input type="radio" name="visita" value="NÃO" required> NÃO</label>
-        </div>
+    <label for="estado">Estado:</label>
+    <input type="text" id="estado" name="estado">
 
-        <label for="maps">URL do Google Maps:</label>
-        <input type="url" id="maps" oninput="previewMaps()">
-        <div id="mapsPreview" class="preview"></div>
-
-        <label for="senha">Senha:<span class="required">*</span></label>
-        <input type="password" id="senha" required>
-
-        <label for="confirmaSenha">Confirmar Senha:<span class="required">*</span></label>
-        <input type="password" id="confirmaSenha" required>
-
-        <label for="tipoUsuario" class="visually-hidden">Tipo de Usuário</label>
-        <select id="tipoUsuario" class="visually-hidden" aria-hidden="true">
-          <option value="Usuário" selected>Usuário</option>
-          <option value="Administrador">Administrador</option>
-        </select>
-
-        <button type="submit" class="btn-main">✅ Finalizar Cadastro</button>
-        <button type="button" class="btn-home" onclick="location.href='index.html'">🏠 Página Inicial</button>
-      </form>
-    </section>
-  </main>
-
-  <script>
-    async function buscarCEP(){
-      const cep = document.getElementById("cep").value.replace(/\D/g, '');
-      if(cep.length !== 8) return;
-      try{
-        const resp = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-        const dados = await resp.json();
-        document.getElementById("enderecoAuto").style.display = "block";
-        document.getElementById("rua").value = dados.logradouro || "";
-        document.getElementById("bairro").value = dados.bairro || "";
-      }catch(e){
-        document.getElementById("enderecoAuto").style.display = "block";
-      }
-    }
-
-    document.getElementById("telefone").addEventListener("input", () => {
-      const tel = document.getElementById("telefone").value.replace(/\D/g,'');
-      const whatsDiv = document.getElementById("whatsLink");
-      if(/^\d{10,11}$/.test(tel)){
-        whatsDiv.innerHTML = `📱 <a href="https://wa.me/55${tel}" target="_blank">Abrir WhatsApp para +55 ${tel}</a>`;
-      } else {
-        whatsDiv.innerHTML = "";
-      }
-    });
-
-    function previewMaps(){
-      const url = document.getElementById("maps").value.trim();
-      const div = document.getElementById("mapsPreview");
-      div.innerHTML = url ? `🌍 <a href="${url}" target="_blank">Visualizar localização</a>` : "";
-    }
-
-    document.getElementById("formCadastro").addEventListener("submit", function(e){
-      e.preventDefault();
-
-      const email = document.getElementById("email").value.trim().toLowerCase();
-      const erroDiv = document.getElementById("emailErro");
-      const cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
-
-      if(cadastros.some(u => (u.email||"").toLowerCase() === email)){
-        erroDiv.style.display = "block";
-        return;
-      } else {
-        erroDiv.style.display = "none";
-      }
-
-      const senha = document.getElementById("senha").value;
-      const confirma = document.getElementById("confirmaSenha").value;
-      if(senha !== confirma){
-        alert("❌ As senhas não coincidem!");
-        return;
-      }
-
-      const tipoUsuario = (document.getElementById("tipoUsuario")?.value || "Usuário").trim();
-
-      const novoCadastro = {
-        nome: document.getElementById("nome").value.trim(),
-        apelido: document.getElementById("apelido").value.trim(),
-        sexo: document.querySelector("input[name='sexo']:checked")?.value,
-        telefone: document.getElementById("telefone").value.trim(),
-        email: email,
-        cep: document.getElementById("cep").value.trim(),
-        rua: document.getElementById("rua").value.trim(),
-        bairro: document.getElementById("bairro").value.trim(),
-        numero: document.getElementById("numero").value.trim(),
-        complemento: document.getElementById("complemento").value.trim(),
-        referencia: document.getElementById("referencia").value.trim(),
-        visita: document.querySelector("input[name='visita']:checked")?.value,
-        maps: document.getElementById("maps").value.trim(),
-        senha: senha,
-        tipoUsuario: tipoUsuario,
-        isAdmin: (tipoUsuario === "Administrador")
-      };
-
-      cadastros.push(novoCadastro);
-      localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
-
-      alert("✅ Cadastro realizado com sucesso!");
-      window.location.href = "index.html";
-    });
-  </script>
+    <button type="submit">Cadastrar</button>
+  </form>
 </body>
 </html>
