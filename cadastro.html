@@ -10,10 +10,10 @@
       --card:#ffffff;
       --text:#2c3e50;
       --muted:#6b7b8c;
-      --primary:#b22222;        /* vermelho queimado */
-      --primary-hov:#800000;    /* vinho escuro */
-      --accent:#ff4500;         /* laranja vivo */
-      --accent-hov:#e03c00;     /* laranja escuro */
+      --primary:#b22222;
+      --primary-hov:#800000;
+      --accent:#ff4500;
+      --accent-hov:#e03c00;
       --ring:rgba(178,34,34,.35);
     }
 
@@ -48,7 +48,6 @@
       padding:24px;
       box-shadow:0 12px 30px rgba(0,0,0,.08);
       border:1px solid rgba(0,0,0,.04);
-      margin:0 auto;
     }
 
     form{display:flex;flex-direction:column;gap:12px}
@@ -73,8 +72,12 @@
     .btn-home{background:#fff;color:var(--accent);border:1px solid #e1e5ea}
     .btn-home:hover{background:#f7f9fb;color:var(--accent-hov)}
 
-    .row{display:flex;gap:12px;flex-wrap:wrap}
-    .row>div{flex:1;min-width:140px}
+    .row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .row>div{flex:1;min-width:180px}
 
     .radios{display:flex;gap:20px;flex-wrap:wrap}
     .radio-option{display:flex;align-items:center;gap:6px}
@@ -82,8 +85,6 @@
 
     .preview{font-size:14px}
     .preview a{color:var(--primary);text-decoration:none}
-
-    .login-info{display:none;margin-top:10px;padding:12px;background:#f9f9f9;border-radius:10px;font-size:14px;border:1px solid #e1e5ea}
 
     .visually-hidden{
       position:absolute !important;
@@ -97,6 +98,7 @@
       .card{padding:18px}
       button{font-size:14px;padding:10px}
       .row{flex-direction:column}
+      .row>div{min-width:100%}
     }
   </style>
 </head>
@@ -163,8 +165,6 @@
           <option value="Administrador">Administrador</option>
         </select>
 
-        <div id="loginInfo" class="login-info"></div>
-
         <button type="submit" class="btn-main">✅ Finalizar Cadastro</button>
         <button type="button" class="btn-home" onclick="location.href='index.html'">🏠 Página Inicial</button>
       </form>
@@ -172,28 +172,6 @@
   </main>
 
   <script>
-    function garantirAdmin(){
-      let cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
-      const existeAdmin = cadastros.some(u => (u.email||"").toLowerCase() === "admin");
-      if(!existeAdmin){
-        cadastros.push({
-          nome:"Administrador",
-          apelido:"Admin",
-          sexo:"MASCULINO",
-          telefone:"",
-          email:"admin",
-          cep:"", rua:"", bairro:"", numero:"", complemento:"", referencia:"",
-          visita:"NÃO", maps:"",
-          senha:"pedidodeoracao",
-          fixo:true,
-          isAdmin:true,
-          tipoUsuario:"Administrador"
-        });
-        localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
-      }
-    }
-    garantirAdmin();
-
     async function buscarCEP(){
       const cep = document.getElementById("cep").value.replace(/\D/g, '');
       if(cep.length !== 8) return;
