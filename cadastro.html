@@ -72,16 +72,19 @@
     .btn-home{background:#fff;color:var(--accent);border:1px solid #e1e5ea}
     .btn-home:hover{background:#f7f9fb;color:var(--accent-hov)}
 
-    .row{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-    }
+    .row{display:flex;gap:12px;flex-wrap:wrap}
     .row>div{flex:1;min-width:180px}
 
-    .radios{display:flex;gap:20px;flex-wrap:wrap}
-    .radio-option{display:flex;align-items:center;gap:6px}
-    .radio-option input{accent-color:var(--primary)}
+    .radios{
+      display:flex;
+      gap:20px;
+      flex-wrap:wrap;
+    }
+    .radio-option{
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
 
     .preview{font-size:14px}
     .preview a{color:var(--primary);text-decoration:none}
@@ -99,6 +102,7 @@
       button{font-size:14px;padding:10px}
       .row{flex-direction:column}
       .row>div{min-width:100%}
+      .radios{flex-direction:column;gap:10px} /* Ajuste para SEXO e VISITA */
     }
   </style>
 </head>
