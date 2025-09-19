@@ -29,9 +29,7 @@
       flex-direction:column;
     }
 
-    /* Cabeçalho */
     header{
-      position:relative;
       background:var(--primary);
       color:var(--gold);
       padding:20px 16px;
@@ -45,44 +43,6 @@
       letter-spacing:.5px;
     }
 
-    /* Ações no topo direito (login/cadastro ou barra do usuário) */
-    .top-actions, .userbar{
-      position:absolute;
-      right:16px;
-      top:50%;
-      transform:translateY(-50%);
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    .top-actions button,
-    .logout{
-      border:none;
-      border-radius:8px;
-      padding:8px 12px;
-      font-weight:700;
-      cursor:pointer;
-      transition:.25s;
-      box-shadow:0 6px 16px rgba(0,0,0,.12);
-    }
-    .btn-login{background:#fff;color:var(--accent);border:1px solid #e1e5ea}
-    .btn-login:hover{background:#f7f9fb;color:var(--accent-hov)}
-    .btn-cadastro{background:var(--accent);color:#fff}
-    .btn-cadastro:hover{background:var(--accent-hov)}
-    .logout{background:var(--accent);color:#fff}
-    .logout:hover{background:var(--accent-hov)}
-
-    .userbar{display:none}
-    .user-meta{
-      text-align:right; line-height:1.2; font-size:13px; color:#fff;
-    }
-    .user-meta strong{display:block; color:#fff}
-    .badge{
-      display:inline-block; font-size:11px; padding:2px 8px; border-radius:999px;
-      background:#ffffff22; color:#fff; margin-top:4px;
-    }
-
-    /* Conteúdo principal */
     .container{
       max-width:1000px;
       margin:28px auto;
@@ -95,23 +55,16 @@
       gap:24px;
     }
 
-    /* Logo/Imagem central */
-    .hero{
-      display:flex; justify-content:center; align-items:center;
-      width:100%;
-    }
     .hero img{
-      max-width:520px;        /* imagem central moderada */
+      max-width:300px;
       width:100%;
       height:auto;
-      display:block;
-      margin:0 auto;
       border-radius:14px;
       box-shadow:0 12px 30px rgba(0,0,0,.12);
       background:#fff;
+      margin-bottom:20px;
     }
 
-    /* Cartões de ação (visitante) */
     .card{
       background:var(--card);
       border-radius:14px;
@@ -132,7 +85,7 @@
       appearance:none; border:none; border-radius:12px; padding:14px 18px;
       font-weight:800; letter-spacing:.3px; cursor:pointer; transition:.25s;
       box-shadow:0 8px 20px rgba(0,0,0,.08);
-      min-width:240px;
+      min-width:220px;
     }
     .btn:active{transform:translateY(1px)}
     .btn-main{background:var(--primary);color:#fff}
@@ -153,24 +106,11 @@
 <body>
   <header>
     <h1>🙏 Pedidos de Oração</h1>
-
-    <!-- Mostra quando NÃO está logado -->
-    <div class="top-actions" id="topActions">
-      <button class="btn-login"   onclick="location.href='login.html'">Login</button>
-      <button class="btn-cadastro" onclick="location.href='cadastro.html'">Cadastre-se</button>
-    </div>
-
-    <!-- Mostra quando ESTÁ logado -->
-    <div class="userbar" id="homeUserBar">
-      <div class="user-meta" id="homeUserMeta"></div>
-      <button class="logout" id="homeLogoutBtn">Sair</button>
-    </div>
   </header>
 
   <main class="container">
-    <!-- Imagem/Logo central (coloque o arquivo na mesma pasta) -->
+    <!-- Logo central -->
     <div class="hero">
-      <!-- Se já estiver usando a logo PGM, deixe o nome exato do arquivo no projeto -->
       <img src="Logo PGM.png" alt="Logo PGM - Pedidos de Oração" />
     </div>
 
@@ -179,8 +119,27 @@
       <h2>Área do Visitante</h2>
       <p>Você pode fazer um pedido de oração ou consultar pedidos já registrados.</p>
       <div class="actions">
-        <button class="btn btn-main"  onclick="location.href='usuario.html'">🙏 Fazer Pedido de Oração</button>
-        <button class="btn btn-accent"onclick="location.href='consulta.html'">🔎 Consultar Pedidos de Oração</button>
+        <button class="btn btn-main" onclick="location.href='usuario.html'">🙏 Fazer Pedido de Oração</button>
+        <button class="btn btn-accent" onclick="location.href='consulta.html'">🔎 Consultar Pedidos de Oração</button>
+      </div>
+    </section>
+
+    <!-- Área Logada -->
+    <section class="card">
+      <h2>Área Logada</h2>
+      <p>Se já possui cadastro, entre com seu login ou acesse o menu logado.</p>
+      <div class="actions">
+        <button class="btn btn-main" onclick="location.href='login.html'">🔑 Fazer Login</button>
+        <button class="btn btn-accent" onclick="abrirMenu()">📋 Menu Logado</button>
+      </div>
+    </section>
+
+    <!-- Área de Cadastro -->
+    <section class="card">
+      <h2>Área de Cadastro</h2>
+      <p>Se ainda não tem conta, cadastre-se para poder acessar todos os recursos.</p>
+      <div class="actions">
+        <button class="btn btn-main" onclick="location.href='cadastro.html'">📝 Cadastrar-se</button>
       </div>
     </section>
   </main>
@@ -188,7 +147,6 @@
   <footer>Ministério PGM • Pedidos de Oração</footer>
 
   <script>
-    /* ==== Sessão & Barra do usuário (sem derrubar login) ==== */
     const ADMINS_FIXOS = ["leoguerramaia@gmail.com","admin@admin.com.br","admin"];
 
     function getUser(){
@@ -206,40 +164,20 @@
       const reg = cadastros.find(u => (u.email||"").toLowerCase() === email);
       return !!reg && (reg.fixo===true || reg.isAdmin===true);
     }
-    function firstName(n){ return (n||"Usuário").trim().split(" ")[0]; }
 
-    document.addEventListener("DOMContentLoaded", () => {
+    function abrirMenu(){
       const user = getUser();
-      const topActions = document.getElementById("topActions");
-      const bar = document.getElementById("homeUserBar");
-      const meta = document.getElementById("homeUserMeta");
-
       if(!user){
-        // Visitante → mostra Login / Cadastre-se
-        topActions.style.display = "flex";
-        bar.style.display = "none";
+        alert("⚠️ Você precisa fazer login primeiro!");
+        location.href = "login.html";
+        return;
+      }
+      if(isAdmin(user, getCadastros())){
+        location.href = "admin.html";
       }else{
-        // Logado → mostra barra do usuário
-        const perfil = isAdmin(user, getCadastros()) ? "Administrador" : "Usuário";
-        meta.innerHTML = `
-          <strong>${firstName(user.nome)}</strong>
-          <span>${user.email || ""}</span>
-          <span class="badge">${perfil}</span>
-        `;
-        topActions.style.display = "none";
-        bar.style.display = "flex";
+        location.href = "menulogado.html";
       }
-
-      // Logoff manual
-      const logoutBtn = document.getElementById("homeLogoutBtn");
-      if(logoutBtn){
-        logoutBtn.addEventListener("click", () => {
-          localStorage.removeItem("usuarioLogado");
-          alert("Você realizou o logoff.");
-          location.reload();
-        });
-      }
-    });
+    }
   </script>
 </body>
 </html>
