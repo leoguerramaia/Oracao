@@ -90,15 +90,16 @@
       margin-bottom:12px;
       box-shadow:0 4px 10px rgba(0,0,0,.08);
       border:1px solid rgba(0,0,0,.05);
+      cursor:pointer;
       transition:.2s;
     }
+    .card:hover{box-shadow:0 6px 14px rgba(0,0,0,.12);}
 
     .card-header{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
-      cursor:pointer;
     }
     .card-header-left{display:flex;align-items:center;gap:12px;}
     .foto{
@@ -111,19 +112,7 @@
     .nome{font-size:16px;font-weight:700;color:var(--primary)}
     .seta{font-size:18px;color:var(--muted);transition:.2s}
 
-    .resumo{
-      font-size:13px;
-      color:var(--muted);
-      margin-top:6px;
-    }
-
-    .detalhes{
-      display:none;
-      margin-top:10px;
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
+    .detalhes{display:none;margin-top:10px;display:flex;flex-direction:column;gap:6px;}
     .detalhes.ativo{display:flex;}
 
     .telefone{font-size:14px;color:var(--muted)}
@@ -243,30 +232,24 @@
             </div>
             <span class="seta">▼</span>
           </div>
-          <div class="resumo">
-            <a class="whats-link" href="https://wa.me/55${tel}" target="_blank">
-              <img src="whatsapp.png" alt="WhatsApp"> Falar com ${pessoa.nome}
-            </a>
-            <div>⬇️ Clique para mais informações</div>
-          </div>
           <div class="detalhes">
             <div class="telefone">📞 +55 ${tel}</div>
             <div class="endereco">🏠 ${endereco}</div>
             ${pessoa.maps ? `<a class="maps-link" href="${pessoa.maps}" target="_blank">
               <img src="GPS.png" alt="GPS"> Localização da Residência
             </a>` : ""}
+            <a class="whats-link" href="https://wa.me/55${tel}" target="_blank">
+              <img src="whatsapp.png" alt="WhatsApp"> Falar com ${pessoa.nome}
+            </a>
             <button class="agenda-btn" onclick='salvarAgenda(${JSON.stringify(pessoa)})'>💾 Salvar na Agenda</button>
           </div>
         `;
 
-        // evento para expandir/contrair
         card.querySelector(".card-header").addEventListener("click", ()=>{
           const detalhes = card.querySelector(".detalhes");
-          const resumo = card.querySelector(".resumo");
           const seta = card.querySelector(".seta");
-          const ativo = detalhes.classList.toggle("ativo");
-          resumo.style.display = ativo ? "none" : "block";
-          seta.textContent = ativo ? "▲" : "▼";
+          detalhes.classList.toggle("ativo");
+          seta.textContent = detalhes.classList.contains("ativo") ? "▲" : "▼";
         });
 
         lista.appendChild(card);
