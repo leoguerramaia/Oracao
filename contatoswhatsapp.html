@@ -15,16 +15,13 @@
       --gold:#ffd700;
       --ring:rgba(178,34,34,.35);
     }
-
     *{box-sizing:border-box;}
-
     body{
       margin:0;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background:var(--bg);
       color:var(--text);
     }
-
     header{
       background:var(--primary);
       color:var(--gold);
@@ -35,7 +32,6 @@
       position:relative;
     }
     header h1{margin:0;font-size:24px}
-
     .user-info{
       position:absolute;
       top:10px;
@@ -45,15 +41,8 @@
       text-align:right;
     }
     .user-info strong{color:#ffd700;}
-
     main{max-width:800px;margin:24px auto;padding:0 16px;}
-
-    .btns-topo{
-      display:flex;
-      gap:12px;
-      margin-bottom:20px;
-      flex-wrap:wrap;
-    }
+    .btns-topo{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
     .btn-nav{
       background:var(--primary);
       color:#fff;
@@ -65,24 +54,12 @@
       transition:.2s;
     }
     .btn-nav:hover{background:var(--primary-hov)}
-
-    /* Caixa de busca */
-    .busca{
-      margin-bottom:20px;
-    }
+    .busca{margin-bottom:20px;}
     .busca input{
-      width:100%;
-      padding:10px 14px;
-      border-radius:10px;
-      border:1px solid #ccc;
-      font-size:15px;
-      outline:none;
+      width:100%;padding:10px 14px;border-radius:10px;
+      border:1px solid #ccc;font-size:15px;outline:none;
     }
-    .busca input:focus{
-      border-color:var(--primary);
-      box-shadow:0 0 0 3px var(--ring);
-    }
-
+    .busca input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--ring);}
     .card{
       background:var(--card);
       border-radius:14px;
@@ -90,59 +67,32 @@
       margin-bottom:12px;
       box-shadow:0 4px 10px rgba(0,0,0,.08);
       border:1px solid rgba(0,0,0,.05);
-      cursor:pointer;
       transition:.2s;
     }
     .card:hover{box-shadow:0 6px 14px rgba(0,0,0,.12);}
-
-    .card-header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
+    .card-header{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;}
     .card-header-left{display:flex;align-items:center;gap:12px;}
-    .foto{
-      width:48px;
-      height:48px;
-      border-radius:50%;
-      object-fit:cover;
-      border:2px solid var(--primary);
-    }
+    .foto{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--primary);}
     .nome{font-size:16px;font-weight:700;color:var(--primary)}
     .seta{font-size:18px;color:var(--muted);transition:.2s}
-
-    .detalhes{display:none;margin-top:10px;display:flex;flex-direction:column;gap:6px;}
+    .resumo{font-size:13px;color:var(--muted);margin-top:6px;}
+    .detalhes{display:none;margin-top:10px;flex-direction:column;gap:6px;}
     .detalhes.ativo{display:flex;}
-
     .telefone{font-size:14px;color:var(--muted)}
     .endereco{font-size:14px;color:var(--text)}
-
     .whats-link, .agenda-btn, .maps-link{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:6px 10px;
-      border-radius:6px;
-      font-size:14px;
-      font-weight:600;
-      text-decoration:none;
-      width:max-content;
-      transition:.2s;
-      margin-top:4px;
+      display:inline-flex;align-items:center;gap:6px;
+      padding:6px 10px;border-radius:6px;font-size:14px;font-weight:600;
+      text-decoration:none;width:max-content;transition:.2s;margin-top:4px;
     }
-
     .whats-link{background:#25d366;color:#fff;}
     .whats-link:hover{background:#1ebe5c;}
     .whats-link img{width:18px;height:18px}
-
     .maps-link{background:#ff9800;color:#fff;}
     .maps-link:hover{background:#e68900;}
     .maps-link img{width:18px;height:18px}
-
     .agenda-btn{background:#1976d2;color:#fff;cursor:pointer;border:none;}
     .agenda-btn:hover{background:#0f5ca8;}
-
     @media(max-width:768px){
       header h1{font-size:20px}
       .nome{font-size:14px}
@@ -162,68 +112,66 @@
       <a href="menulogado.html" class="btn-nav">⬅️ Voltar ao Menu Logado</a>
       <a href="index.html" class="btn-nav">🏠 Página Inicial</a>
     </div>
-
-    <!-- Caixa de busca -->
     <div class="busca">
       <input type="text" id="buscaInput" placeholder="🔍 Buscar contato pelo nome ou apelido...">
     </div>
-
     <div id="listaContatos"></div>
   </main>
 
-  <script>
-    // 🔒 Verifica login
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+
+    // Configuração Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyATVaYFF3Ho47Vc4bB0BOy7Q2NKLAqSHXQ",
+      authDomain: "pedidosoracao-5226e.firebaseapp.com",
+      projectId: "pedidosoracao-5226e",
+      storageBucket: "pedidosoracao-5226e.firebasestorage.app",
+      messagingSenderId: "1036424775005",
+      appId: "1:1036424775005:web:e07fb3c31ff94854c894b4",
+      measurementId: "G-DP0CCC7BGC"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Simula login
     const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado") || "null");
-    if(!usuarioLogado){
-      alert("❌ Você precisa estar logado para acessar esta página!");
-      window.location.href = "login.html";
-    }
-
     if(usuarioLogado){
-      const userInfoDiv = document.getElementById("userInfo");
-      const nome = usuarioLogado.apelido || usuarioLogado.nome || "";
-      userInfoDiv.innerHTML = `👤 Logado como <strong>${nome}</strong><br>${usuarioLogado.email || ""}`;
+      document.getElementById("userInfo").innerHTML = `👤 Logado como <strong>${usuarioLogado.apelido || usuarioLogado.nome}</strong><br>${usuarioLogado.email}`;
     }
-
     function logoff(){
       localStorage.removeItem("usuarioLogado");
       window.location.href = "index.html";
     }
 
-    const cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
     const lista = document.getElementById("listaContatos");
 
-    function renderContatos(filtro=""){
+    async function carregarContatos(filtro=""){
+      lista.innerHTML = "<p>⏳ Carregando...</p>";
+      const q = query(collection(db, "cadastrosUsuarios"), orderBy("nome"));
+      const snapshot = await getDocs(q);
+
+      let contatos = [];
+      snapshot.forEach(doc => contatos.push({ id: doc.id, ...doc.data() }));
+
+      // filtro
+      const filtrados = contatos.filter(p=>{
+        const nome = (p.nome || "").toLowerCase();
+        const apelido = (p.apelido || "").toLowerCase();
+        return nome.includes(filtro) || apelido.includes(filtro);
+      });
+
       lista.innerHTML = "";
-      const contatosFiltrados = cadastros
-        .filter(p=>{
-          const nome = (p.nome || "").toLowerCase();
-          const apelido = (p.apelido || "").toLowerCase();
-          return nome.includes(filtro) || apelido.includes(filtro);
-        })
-        .sort((a,b)=>{
-          const nomeA = (a.nome || "").toLowerCase();
-          const nomeB = (b.nome || "").toLowerCase();
-          return nomeA.localeCompare(nomeB);
-        });
-
-      if(contatosFiltrados.length === 0){
-        lista.innerHTML = "<p>Nenhum contato encontrado.</p>";
-        return;
-      }
-
-      contatosFiltrados.forEach(pessoa=>{
-        if(!pessoa.telefone) return;
-
+      filtrados.forEach(pessoa=>{
         const apelido = pessoa.apelido ? ` (${pessoa.apelido})` : "";
         const nomeCompleto = `${pessoa.nome || "Sem nome"}${apelido}`;
         const tel = (pessoa.telefone || "").replace(/\D/g,'');
-        const foto = pessoa.foto ? pessoa.foto : "avatar.png";
+        const foto = pessoa.foto || "avatar.png";
         const endereco = `${pessoa.rua || ""} ${pessoa.numero || ""} ${pessoa.complemento || ""}, ${pessoa.bairro || ""}, ${pessoa.cidade || ""}-${pessoa.estado || ""}`.trim();
 
         const card = document.createElement("div");
         card.className = "card";
-
         card.innerHTML = `
           <div class="card-header">
             <div class="card-header-left">
@@ -232,37 +180,44 @@
             </div>
             <span class="seta">▼</span>
           </div>
+          <div class="resumo">
+            ${tel ? `<a class="whats-link" href="https://wa.me/55${tel}" target="_blank">
+              <img src="whatsapp.png" alt="WhatsApp"> Falar com ${pessoa.nome}
+            </a>` : ""}
+            <div>⬇️ Clique para mais informações</div>
+          </div>
           <div class="detalhes">
             <div class="telefone">📞 +55 ${tel}</div>
             <div class="endereco">🏠 ${endereco}</div>
-            <a class="whats-link" href="https://wa.me/55${tel}" target="_blank">
+            ${tel ? `<a class="whats-link" href="https://wa.me/55${tel}" target="_blank">
               <img src="whatsapp.png" alt="WhatsApp"> Falar com ${pessoa.nome}
-            </a>
+            </a>` : ""}
             ${pessoa.maps ? `<a class="maps-link" href="${pessoa.maps}" target="_blank">
               <img src="GPS.png" alt="GPS"> Localização da Residência
             </a>` : ""}
             <button class="agenda-btn" onclick='salvarAgenda(${JSON.stringify(pessoa)})'>💾 Salvar na Agenda</button>
           </div>
         `;
-
         card.querySelector(".card-header").addEventListener("click", ()=>{
           const detalhes = card.querySelector(".detalhes");
+          const resumo = card.querySelector(".resumo");
           const seta = card.querySelector(".seta");
-          detalhes.classList.toggle("ativo");
-          seta.textContent = detalhes.classList.contains("ativo") ? "▲" : "▼";
+          const ativo = detalhes.classList.toggle("ativo");
+          resumo.style.display = ativo ? "none" : "block";
+          seta.textContent = ativo ? "▲" : "▼";
         });
-
         lista.appendChild(card);
       });
     }
 
     document.getElementById("buscaInput").addEventListener("input", e=>{
-      renderContatos(e.target.value.toLowerCase());
+      carregarContatos(e.target.value.toLowerCase());
     });
 
-    renderContatos();
+    carregarContatos();
 
-    function salvarAgenda(pessoa){
+    // Exportar vCard
+    window.salvarAgenda = function(pessoa){
       const apelido = pessoa.apelido ? ` (${pessoa.apelido})` : "";
       const nomeCompleto = `${pessoa.nome || ""}${apelido}`;
       const tel = (pessoa.telefone || "").replace(/\D/g,'');
@@ -275,13 +230,7 @@ FN:${nomeCompleto}
 TEL;TYPE=CELL:+55${tel}
 EMAIL:${pessoa.email || ""}
 ADR;TYPE=HOME:;;${endereco};;;
-`;
-
-      if(pessoa.foto){
-        vcard += `PHOTO;ENCODING=b;TYPE=JPEG:${pessoa.foto.split(",")[1]}\n`;
-      }
-
-      vcard += "END:VCARD";
+END:VCARD`;
 
       const blob = new Blob([vcard], { type: "text/vcard" });
       const url = URL.createObjectURL(blob);
