@@ -112,7 +112,6 @@
       catch { return []; }
     }
 
-    // Normaliza o tipo a partir do registro (mantém compatibilidade com cadastros antigos)
     function obterTipoUsuario(reg){
       const tipo = (reg && reg.tipoUsuario) ? String(reg.tipoUsuario).trim() : "";
       if (tipo.toLowerCase() === "administrador") return "Administrador";
@@ -132,7 +131,6 @@
 
       const cadastros = getCadastros();
 
-      // Encontra usuário por email + senha
       const usuario = cadastros.find(u =>
         (u.email || "").toLowerCase() === email && String(u.senha) === String(senha)
       );
@@ -143,24 +141,20 @@
       }
       erroDiv.style.display = "none";
 
-      // Define e garante o tipo de usuário a partir do cadastro
       const tipoUsuario = obterTipoUsuario(usuario);
 
-      // Atualiza também no cadastro em memória para manter consistência
+      // Atualiza dados de sessão
       usuario.tipoUsuario = tipoUsuario;
-      usuario.isAdmin = (tipoUsuario === "Administrador") || usuario.isAdmin === true || usuario.fixo === true;
-
-      // Salva sessão com as informações do cadastro
+      usuario.isAdmin = (tipoUsuario === "Administrador");
       localStorage.setItem("usuarioLogado", JSON.stringify(usuario));
 
-      // Redireciona conforme TIPO DE USUÁRIO
+      // Redirecionamento
       if (tipoUsuario === "Administrador") {
         window.location.href = "admin.html";
       } else {
-        window.location.href = "menulogado.html";
+        window.location.href = "menulogado.html"; // sempre vai para menulogado.html
       }
     });
   </script>
 </body>
 </html>
-
