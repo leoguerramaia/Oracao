@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Menu Logado</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#fff7f2;
+      --card:#ffffff;
+      --text:#2c3e50;
+      --muted:#6b7b8c;
+      --primary:#b22222;        /* vermelho queimado */
+      --primary-hov:#800000;    /* vinho escuro */
+      --accent:#ff4500;         /* laranja vivo */
+      --accent-hov:#e03c00;     /* laranja escuro */
+      --ring: rgba(178,34,34,0.4);
+    }
+
+    body{
+      font-family: Arial, sans-serif;
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    header{
+      background:var(--primary);
+      color:#fff;
+      padding:10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    header h1{
+      margin:0;
+      font-size:20px;
+    }
+
+    .login-info{
+      font-size:14px;
+    }
+
+    .login-info span{
+      margin-right:10px;
+    }
+
+    .logout{
+      background: var(--accent);
+      border:none;
+      padding:5px 10px;
+      color:#fff;
+      border-radius:5px;
+      cursor:pointer;
+    }
+
+    main{
+      padding:20px;
+      text-align:center;
+    }
+
+    .submenu{
+      background:var(--card);
+      padding:20px;
+      border-radius:10px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1);
+      max-width:600px;
+      margin:20px auto;
+    }
+
+    .submenu p{
+      font-size:16px;
+      font-weight:bold;
+      margin-bottom:20px;
+    }
+
+    .btn-menu{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      width:100%;
+      margin:10px 0;
+      padding:12px;
+      font-size:16px;
+      background:var(--primary);
+      color:#fff;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-menu:hover{
+      background:var(--primary-hov);
+    }
+
+    .icon{
+      font-size:18px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Menu Logado</h1>
+    <div class="login-info" id="loginInfo">
+      <!-- Preenchido via JS -->
+    </div>
+  </header>
+
+  <main>
+    <div class="submenu">
+      <p>Bem vindo(a) a área logada, aqui você tem acesso as seguintes funcionalidades:</p>
+
+      <button class="btn-menu" onclick="window.location.href='usuariologado.html'">
+        <span class="icon">🙏</span> Fazer Pedido de Oração
+      </button>
+
+      <button class="btn-menu" onclick="window.location.href='buscarpedidos.html'">
+        <span class="icon">🔍</span> Buscar Meus Pedidos
+      </button>
+
+      <button class="btn-menu" onclick="window.location.href='contatoswhatsapp.html'">
+        <span class="icon">📱</span> Contatos do Grupo
+      </button>
+
+      <button class="btn-menu" onclick="window.location.href='localizacao.html'">
+        <span class="icon">📍</span> Localização das Casas
+      </button>
+
+      <button class="btn-menu" onclick="window.location.href='index.html'">
+        <span class="icon">🏠</span> Página Inicial
+      </button>
+    </div>
+  </main>
+
+  <script>
+    // Simulação de dados do usuário logado
+    const usuarioLogado = {
+      nome: "Leonardo Guerra Maia",
+      sexo: "Masculino",
+      email: "leonardo@email.com"
+    };
+
+    // Exibir login info no canto superior direito
+    const primeiroNome = usuarioLogado.nome.split(" ")[0];
+    document.getElementById("loginInfo").innerHTML = `
+      <span>${primeiroNome} (${usuarioLogado.email})</span>
+      <button class="logout" onclick="logout()">Logout</button>
+    `;
+
+    // Popup de boas-vindas
+    window.onload = () => {
+      alert("Bem-vindo, " + primeiroNome + "!");
+    };
+
+    // Função logout
+    function logout(){
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
