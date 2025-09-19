@@ -89,4 +89,250 @@
 
         <label for="bairro">Bairro:</label><input type="text" id="bairro" disabled>
         <label for="cidade">Cidade:</label><input type="text" id="cidade" disabled>
-        <label for="est
+        <label for="estado">Estado:</label><input type="text" id="estado" disabled>
+
+        <label for="visita">Aceita Visita?<span class="required">*</span></label>
+        <select id="visita" required>
+          <option value="">Selecione...</option>
+          <option value="SIM">Sim</option>
+          <option value="NÃO">Não</option>
+        </select>
+
+        <label for="maps">URL do Google Maps:</label>
+        <input type="url" id="maps" placeholder="Cole aqui a URL do Maps" oninput="previewMaps()">
+        <div id="mapsPreview" class="preview"></div>
+
+        <label for="senha">Senha:<span class="required">*</span></label>
+        <div class="senha-container">
+          <input type="password" id="senha" required>
+          <span class="toggle-senha" onclick="toggleSenha('senha', this)">👁️</span>
+        </div>
+
+        <label for="confirmaSenha">Confirmar Senha:<span class="required">*</span></label>
+        <div class="senha-container">
+          <input type="password" id="confirmaSenha" required>
+          <span class="toggle-senha" onclick="toggleSenha('confirmaSenha', this)">👁️</span>
+        </div>
+
+        <p class="obrigatorio">⚠️ Os campos marcados com * são obrigatórios.</p>
+        <button type="submit" class="btn-main" id="btnCadastrar">✅ Finalizar Cadastro</button>
+      </form>
+    </section>
+  </main>
+
+  <!-- Firebase compat (evita problemas de ES Modules) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    // --- Config do seu projeto Firebase ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyATVaYFF3Ho47Vc4bB0BOy7Q2NKLAqSHXQ",
+      authDomain: "pedidosoracao-5226e.firebaseapp.com",
+      projectId: "pedidosoracao-5226e",
+      storageBucket: "pedidosoracao-5226e.firebasestorage.app",
+      messagingSenderId: "1036424775005",
+      appId: "1:1036424775005:web:e07fb3c31ff94854c894b4",
+      measurementId: "G-DP0CCC7BGC"
+    };
+
+    // Inicializa Firebase + Firestore
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // 🔎 Auto-diagnóstico rápido do Firestore ao carregar a página
+    (async function smokeTest(){
+      try{
+        const ref = await db.collection("__ping").add({ t: Date.now() });
+        // tenta remover para não sujar a base (ignora erro de delete)
+        try { await db.collection("__ping").doc(ref.id).delete(); } catch(_) {}
+        console.log("[Firestore] OK: escrita liberada.");
+      }catch(err){
+        console.error("[Firestore] Falha na escrita:", err);
+        alert("❌ O Firestore está bloqueando a gravação.\n\nDetalhes: " + (err?.code || "") + " - " + (err?.message || err) + "\n\nDica: ajuste as regras em Firestore > Rules para permitir escrita temporariamente durante o teste.");
+      }
+    })();
+
+    // ==== UI helpers ====
+    function toggleSenha(id, el){
+      const input = document.getElementById(id);
+      if(input.type === "password"){ input.type = "text"; el.textContent = "🙈"; }
+      else{ input.type = "password"; el.textContent = "👁️"; }
+    }
+    window.toggleSenha = toggleSenha;
+
+    async function buscarCEP(){
+      const cep = document.getElementById("cep").value.replace(/\D/g,'');
+      const erroDiv = document.getElementById("cepErro");
+      if(cep.length !== 8) return;
+      try{
+        const resp = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const dados = await resp.json();
+        if(dados.erro){
+          erroDiv.style.display = "block";
+          erroDiv.innerText = "❌ CEP não encontrado. Preencha manualmente.";
+          habilitarEndereco(true);
+        } else {
+          erroDiv.style.display = "none";
+          document.getElementById("rua").value = dados.logradouro || "";
+          document.getElementById("bairro").value = dados.bairro || "";
+          document.getElementById("cidade").value = dados.localidade || "";
+          document.getElementById("estado").value = dados.uf || "";
+          habilitarEndereco(false);
+        }
+      }catch{
+        erroDiv.style.display = "block";
+        erroDiv.innerText = "❌ Erro ao buscar CEP. Preencha manualmente.";
+        habilitarEndereco(true);
+      }
+    }
+    window.buscarCEP = buscarCEP;
+
+    function habilitarEndereco(habilitar){
+      ["rua","bairro","cidade","estado"].forEach(id=> document.getElementById(id).disabled = !habilitar);
+    }
+
+    // WhatsApp preview
+    document.getElementById("telefone").addEventListener("input", ()=>{
+      const tel = document.getElementById("telefone").value.replace(/\D/g,'');
+      const whatsDiv = document.getElementById("whatsLink");
+      if(/^\d{10,11}$/.test(tel)){
+        whatsDiv.innerHTML = `<a href="https://wa.me/55${tel}" target="_blank">💬 Conversar no WhatsApp</a>`;
+      } else whatsDiv.innerHTML = "";
+    });
+
+    function previewMaps(){
+      const url = document.getElementById("maps").value.trim();
+      const div = document.getElementById("mapsPreview");
+      div.innerHTML = url ? `<a href="${url}" target="_blank">📍 Abrir localização</a>` : "";
+    }
+    window.previewMaps = previewMaps;
+
+    // Foto preview
+    const fotoInput = document.getElementById("foto");
+    const fotoPreview = document.getElementById("fotoPreview");
+    fotoInput?.addEventListener("change", e=>{
+      const file = e.target.files[0];
+      if(file){
+        const reader = new FileReader();
+        reader.onload = ev=>{
+          fotoPreview.src = ev.target.result;
+          fotoPreview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // ==== SUBMIT ====
+    const form = document.getElementById("formCadastro");
+    const btn = document.getElementById("btnCadastrar");
+
+    form.addEventListener("submit", async (e)=>{
+      e.preventDefault();
+
+      // normaliza telefone (só dígitos)
+      const telEl = document.getElementById("telefone");
+      telEl.value = telEl.value.replace(/\D/g, "");
+
+      if(!form.checkValidity()){
+        form.reportValidity();
+        return;
+      }
+
+      btn.disabled = true; btn.textContent = "Salvando...";
+
+      // Verifica e-mail duplicado
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      try{
+        const snap = await db.collection("cadastrosUsuarios").where("email","==",email).get();
+        if(!snap.empty){
+          document.getElementById("emailErro").style.display = "block";
+          btn.disabled = false; btn.textContent = "✅ Finalizar Cadastro";
+          return;
+        } else {
+          document.getElementById("emailErro").style.display = "none";
+        }
+      }catch(err){
+        alert("❌ Erro ao verificar e-mail existente.\n" + (err?.message || err));
+        btn.disabled = false; btn.textContent = "✅ Finalizar Cadastro";
+        return;
+      }
+
+      // Confere senhas
+      const senha = document.getElementById("senha").value;
+      const confirma = document.getElementById("confirmaSenha").value;
+      if(senha !== confirma){
+        alert("❌ As senhas não coincidem!");
+        btn.disabled = false; btn.textContent = "✅ Finalizar Cadastro";
+        return;
+      }
+
+      // Foto base64 (cuidado com tamanho)
+      let fotoBase64 = "";
+      try{
+        const file = fotoInput?.files?.[0];
+        if(file){
+          if (file.size > 400 * 1024) {
+            const continuar = confirm("⚠️ A foto é grande (>400KB) e pode falhar ao salvar. Deseja continuar?");
+            if(!continuar){
+              btn.disabled = false; btn.textContent = "✅ Finalizar Cadastro";
+              return;
+            }
+          }
+          fotoBase64 = await new Promise(resolve=>{
+            const r = new FileReader();
+            r.onload = ev => resolve(ev.target.result);
+            r.readAsDataURL(file);
+          });
+        }
+      }catch(err){
+        console.warn("[Cadastro] Erro ao ler foto:", err);
+      }
+
+      const novoCadastro = {
+        nome: document.getElementById("nome").value.trim(),
+        apelido: document.getElementById("apelido").value.trim(),
+        sexo: document.getElementById("sexo").value,
+        telefone: document.getElementById("telefone").value.trim(),
+        email,
+        cep: document.getElementById("cep").value.trim(),
+        rua: document.getElementById("rua").value.trim(),
+        numero: document.getElementById("numero").value.trim(),
+        complemento: document.getElementById("complemento").value.trim(),
+        bairro: document.getElementById("bairro").value.trim(),
+        cidade: document.getElementById("cidade").value.trim(),
+        estado: document.getElementById("estado").value.trim(),
+        visita: document.getElementById("visita").value,
+        maps: document.getElementById("maps").value.trim(),
+        senha,
+        foto: fotoBase64,
+        createdAt: new Date().toISOString()
+      };
+
+      try{
+        await db.collection("cadastrosUsuarios").add(novoCadastro);
+        alert("✅ Cadastro realizado com sucesso!");
+        window.location.href = "index.html";
+      }catch(err){
+        console.error("[Cadastro] Erro ao salvar:", err);
+        let msg = "❌ Erro ao salvar cadastro.";
+        if (err?.code === "permission-denied") {
+          msg += "\n• Regras do Firestore estão bloqueando (permission-denied).";
+        } else if (err?.code === "failed-precondition") {
+          msg += "\n• Verifique se o Firestore está habilitado no console.";
+        } else if (err?.code === "resource-exhausted" || (err?.message||"").includes("maximum")) {
+          msg += "\n• Documento muito grande (possível foto grande). Tente sem foto.";
+        }
+        alert(msg + (err?.message ? "\n\nDetalhes: " + err.message : ""));
+      } finally {
+        btn.disabled = false; btn.textContent = "✅ Finalizar Cadastro";
+      }
+    });
+
+    // Aviso útil se abrir via file://
+    if (location.protocol === "file:") {
+      console.warn("⚠️ Dica: execute em http(s) (ex.: Live Server/serve) para evitar bloqueios do navegador.");
+    }
+  </script>
+</body>
+</html>
