@@ -1,30 +1,161 @@
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-  import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
-
-  const firebaseConfig = { /* ...mesmo config... */ };
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  document.getElementById("formLogin").addEventListener("submit", async (e)=>{
-    e.preventDefault();
-
-    const email = document.getElementById("email").value.trim().toLowerCase();
-    const senha = document.getElementById("senha").value;
-
-    const q = query(collection(db, "cadastrosUsuarios"), where("email","==",email), where("senha","==",senha));
-    const snap = await getDocs(q);
-
-    if(snap.empty){
-      alert("❌ Usuário ou senha incorretos.");
-      return;
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Pedidos de Oração</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#fff7f2; --card:#ffffff; --text:#2c3e50; --muted:#6b7b8c;
+      --primary:#b22222;        /* vermelho queimado */
+      --primary-hov:#800000;    /* vinho escuro */
+      --accent:#ff4500;         /* laranja vivo */
+      --accent-hov:#e03c00;     /* laranja escuro */
+      --gold:#ffd700;           /* dourado */
+      --ring:rgba(178,34,34,.35);
     }
 
-    let usuario = null;
-    snap.forEach(doc => usuario = doc.data());
+    * { box-sizing: border-box; }
 
-    localStorage.setItem("usuarioLogado", JSON.stringify(usuario));
-    alert("✅ Login realizado com sucesso!");
-    window.location.href = "menulogado.html";
-  });
-</script>
+    body{
+      margin:0;
+      font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    header{
+      background:var(--primary);
+      color:var(--gold);
+      padding:20px;
+      text-align:center;
+      box-shadow:0 2px 10px rgba(0,0,0,.15);
+      text-shadow:0 0 6px rgba(255,215,0,0.6);
+    }
+    header h1{margin:0;font-size:24px;letter-spacing:.5px}
+
+    .container{
+      max-width:400px;
+      margin:32px auto;
+      padding:0 16px;
+    }
+
+    .card{
+      background:var(--card);
+      border-radius:14px;
+      padding:24px;
+      box-shadow:0 12px 30px rgba(0,0,0,.08);
+      border:1px solid rgba(0,0,0,.04);
+    }
+
+    form { display:flex; flex-direction:column; gap:14px; }
+
+    label{font-weight:600}
+    label .required{color:var(--primary);margin-left:4px}
+
+    input,button{
+      width:100%;
+      padding:12px 14px;
+      border-radius:10px;
+      font-size:15px;
+    }
+    input{border:1px solid #e1e5ea;outline:none;background:#fff}
+    input:focus{border-color:var(--primary);box-shadow:0 0 0 4px var(--ring)}
+
+    .erro{
+      color:var(--primary);
+      font-size:13px;
+      display:none;
+    }
+
+    button{
+      border:none;
+      font-weight:700;
+      cursor:pointer;
+      transition:.3s;
+    }
+    .btn-main{background:var(--primary);color:#fff}
+    .btn-main:hover{background:var(--primary-hov)}
+    .btn-home{background:#fff;color:var(--accent);border:1px solid #e1e5ea}
+    .btn-home:hover{background:#f7f9fb;color:var(--accent-hov)}
+
+    @media (max-width:768px){
+      header h1{font-size:20px}
+      .container{margin:16px auto}
+      .card{padding:18px}
+      button{font-size:14px;padding:10px}
+    }
+  </style>
+</head>
+<body>
+  <header><h1>🔑 Login</h1></header>
+  <main class="container">
+    <section class="card">
+      <form id="formLogin">
+        <label for="email">E-mail:<span class="required">*</span></label>
+        <input type="email" id="email" required>
+
+        <label for="senha">Senha:<span class="required">*</span></label>
+        <input type="password" id="senha" required>
+
+        <div id="erroLogin" class="erro">❌ E-mail ou senha inválidos.</div>
+
+        <button type="submit" class="btn-main">➡️ Entrar</button>
+        <button type="button" class="btn-home" onclick="location.href='index.html'">🏠 Página Inicial</button>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    function getCadastros(){
+      try { return JSON.parse(localStorage.getItem("cadastrosUsuarios")) || []; }
+      catch { return []; }
+    }
+
+    function obterTipoUsuario(reg){
+      const tipo = (reg && reg.tipoUsuario) ? String(reg.tipoUsuario).trim() : "";
+      if (tipo.toLowerCase() === "administrador") return "Administrador";
+      if (tipo.toLowerCase() === "usuário" || tipo.toLowerCase() === "usuario") return "Usuário";
+
+      // Fallback: se registro antigo tinha flags
+      if (reg && (reg.isAdmin === true || reg.fixo === true)) return "Administrador";
+      return "Usuário";
+    }
+
+    document.getElementById("formLogin").addEventListener("submit", function(e){
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const senha = document.getElementById("senha").value;
+      const erroDiv = document.getElementById("erroLogin");
+
+      const cadastros = getCadastros();
+
+      const usuario = cadastros.find(u =>
+        (u.email || "").toLowerCase() === email && String(u.senha) === String(senha)
+      );
+
+      if(!usuario){
+        erroDiv.style.display = "block";
+        return;
+      }
+      erroDiv.style.display = "none";
+
+      const tipoUsuario = obterTipoUsuario(usuario);
+
+      // Atualiza dados de sessão
+      usuario.tipoUsuario = tipoUsuario;
+      usuario.isAdmin = (tipoUsuario === "Administrador");
+      localStorage.setItem("usuarioLogado", JSON.stringify(usuario));
+
+      // Redirecionamento
+      if (tipoUsuario === "Administrador") {
+        window.location.href = "admin.html";
+      } else {
+        window.location.href = "menulogado.html"; // sempre vai para menulogado.html
+      }
+    });
+  </script>
+</body>
+</html>
+
