@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Buscar Meus Pedidos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#fff7f2;
+      --card:#ffffff;
+      --text:#2c3e50;
+      --muted:#6b7b8c;
+      --primary:#b22222;        /* vermelho queimado */
+      --primary-hov:#800000;    /* vinho escuro */
+      --accent:#ff4500;         /* laranja vivo */
+      --accent-hov:#e03c00;     /* laranja escuro */
+      --ring: rgba(178,34,34,0.4);
+    }
+
+    body{
+      font-family: Arial, sans-serif;
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    header{
+      background:var(--primary);
+      color:#fff;
+      padding:10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    header h1{
+      margin:0;
+      font-size:20px;
+    }
+
+    .login-info{
+      font-size:14px;
+    }
+
+    .login-info span{
+      margin-right:10px;
+    }
+
+    .logout{
+      background: var(--accent);
+      border:none;
+      padding:5px 10px;
+      color:#fff;
+      border-radius:5px;
+      cursor:pointer;
+    }
+
+    main{
+      padding:20px;
+      max-width:700px;
+      margin:auto;
+    }
+
+    .search-box{
+      background:var(--card);
+      padding:20px;
+      border-radius:10px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom:20px;
+      text-align:center;
+    }
+
+    .search-box input{
+      width:80%;
+      padding:10px;
+      border:1px solid #ccc;
+      border-radius:5px;
+    }
+
+    .search-box button{
+      margin-left:10px;
+      padding:10px 15px;
+      background:var(--primary);
+      color:#fff;
+      border:none;
+      border-radius:5px;
+      cursor:pointer;
+    }
+
+    .search-box button:hover{
+      background:var(--primary-hov);
+    }
+
+    .results{
+      background:var(--card);
+      padding:20px;
+      border-radius:10px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .pedido{
+      padding:10px;
+      border-bottom:1px solid #eee;
+    }
+
+    .pedido:last-child{
+      border:none;
+    }
+
+    .pedido strong{
+      display:block;
+      color:var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Buscar Meus Pedidos</h1>
+    <div class="login-info" id="loginInfo">
+      <!-- Preenchido via JS -->
+    </div>
+  </header>
+
+  <main>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Digite uma palavra-chave do pedido...">
+      <button onclick="buscarPedidos()">Buscar</button>
+    </div>
+
+    <div class="results" id="results">
+      <p><em>Digite algo e clique em buscar para ver seus pedidos.</em></p>
+    </div>
+  </main>
+
+  <script>
+    // Simulação de dados do usuário logado
+    const usuarioLogado = {
+      nome: "Leonardo Guerra Maia",
+      sexo: "Masculino",
+      email: "leonardo@email.com"
+    };
+
+    const primeiroNome = usuarioLogado.nome.split(" ")[0];
+
+    // Preencher login info
+    document.getElementById("loginInfo").innerHTML = `
+      <span>${primeiroNome} (${usuarioLogado.email})</span>
+      <button class="logout" onclick="logout()">Logout</button>
+    `;
+
+    // Popup de boas-vindas
+    window.onload = () => {
+      alert("Bem-vindo, " + primeiroNome + "!");
+    };
+
+    // Função logout
+    function logout(){
+      window.location.href = "index.html";
+    }
+
+    // Simulação de pedidos cadastrados
+    const pedidos = [
+      { data: "10/09/2025", texto: "Oração pela saúde da família" },
+      { data: "12/09/2025", texto: "Pedido de orientação profissional" },
+      { data: "15/09/2025", texto: "Agradecimento por bênçãos recebidas" }
+    ];
+
+    // Função de busca
+    function buscarPedidos(){
+      const termo = document.getElementById("searchInput").value.toLowerCase();
+      const areaResultados = document.getElementById("results");
+
+      const filtrados = pedidos.filter(p => p.texto.toLowerCase().includes(termo));
+
+      if(filtrados.length === 0){
+        areaResultados.innerHTML = "<p><em>Nenhum pedido encontrado.</em></p>";
+      } else {
+        areaResultados.innerHTML = filtrados.map(p => `
+          <div class="pedido">
+            <strong>${p.data}</strong>
+            <span>${p.texto}</span>
+          </div>
+        `).join("");
+      }
+    }
+  </script>
+</body>
+</html>
