@@ -12,8 +12,6 @@
       --muted:#6b7b8c;
       --primary:#b22222;
       --primary-hov:#800000;
-      --accent:#ff4500;
-      --accent-hov:#e03c00;
       --gold:#ffd700;
       --ring:rgba(178,34,34,.35);
     }
@@ -42,15 +40,25 @@
     .card{
       background:var(--card);
       border-radius:14px;
-      padding:20px;
+      padding:16px;
       margin-bottom:16px;
       box-shadow:0 4px 10px rgba(0,0,0,.08);
       border:1px solid rgba(0,0,0,.05);
       display:flex;
-      flex-direction:column;
-      gap:6px;
+      align-items:center;
+      gap:16px;
     }
 
+    .foto{
+      width:64px;
+      height:64px;
+      border-radius:50%;
+      object-fit:cover;
+      border:2px solid var(--primary);
+      flex-shrink:0;
+    }
+
+    .info{flex:1;display:flex;flex-direction:column;gap:4px;}
     .nome{font-size:18px;font-weight:700;color:var(--primary)}
     .telefone{font-size:15px;color:var(--muted)}
 
@@ -60,8 +68,8 @@
       gap:6px;
       background:#25d366;
       color:#fff;
-      padding:8px 12px;
-      border-radius:8px;
+      padding:6px 10px;
+      border-radius:6px;
       font-size:14px;
       font-weight:600;
       text-decoration:none;
@@ -69,11 +77,12 @@
       transition:.2s;
     }
     .whats-link:hover{background:#1ebe5c}
-    .whats-link img{width:20px;height:20px}
+    .whats-link img{width:18px;height:18px}
 
     @media(max-width:768px){
       header h1{font-size:20px}
       .nome{font-size:16px}
+      .foto{width:50px;height:50px}
     }
   </style>
 </head>
@@ -102,16 +111,20 @@
         const apelido = pessoa.apelido ? ` (${pessoa.apelido})` : "";
         const nomeCompleto = `${pessoa.nome || "Sem nome"}${apelido}`;
         const tel = (pessoa.telefone || "").replace(/\D/g,'');
+        const foto = pessoa.foto ? pessoa.foto : "avatar.png"; // usa avatar padrão se não tiver
 
         const card = document.createElement("div");
         card.className = "card";
 
         card.innerHTML = `
-          <div class="nome">${nomeCompleto}</div>
-          <div class="telefone">📞 +55 ${tel}</div>
-          <a class="whats-link" href="https://wa.me/55${tel}" target="_blank">
-            <img src="whatsapp.png" alt="WhatsApp"> Falar com ${pessoa.nome}
-          </a>
+          <img src="${foto}" alt="Foto de ${pessoa.nome}" class="foto">
+          <div class="info">
+            <div class="nome">${nomeCompleto}</div>
+            <div class="telefone">📞 +55 ${tel}</div>
+            <a class="whats-link" href="https://wa.me/55${tel}" target="_blank">
+              <img src="whatsapp.png" alt="WhatsApp"> Falar com ${pessoa.nome}
+            </a>
+          </div>
         `;
 
         lista.appendChild(card);
