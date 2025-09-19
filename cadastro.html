@@ -83,10 +83,8 @@
     .preview{font-size:14px}
     .preview a{color:var(--primary);text-decoration:none}
 
-    /* Bloco exibido após o cadastro – mantido oculto para não criar "vazio" */
     .login-info{display:none;margin-top:10px;padding:12px;background:#f9f9f9;border-radius:10px;font-size:14px;border:1px solid #e1e5ea}
 
-    /* Esconde visualmente mas mantém no DOM (para ler o valor no submit) */
     .visually-hidden{
       position:absolute !important;
       width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
@@ -98,6 +96,7 @@
       .container{margin:16px auto}
       .card{padding:18px}
       button{font-size:14px;padding:10px}
+      .row{flex-direction:column}
     }
   </style>
 </head>
@@ -108,6 +107,9 @@
       <form id="formCadastro">
         <label for="nome">Nome:<span class="required">*</span></label>
         <input type="text" id="nome" required>
+
+        <label for="apelido">Como Gosta de Ser Chamado:</label>
+        <input type="text" id="apelido" placeholder="Ex: Leo, Mariazinha, Pastor João">
 
         <label>Sexo:<span class="required">*</span></label>
         <div class="radios">
@@ -155,8 +157,6 @@
         <label for="confirmaSenha">Confirmar Senha:<span class="required">*</span></label>
         <input type="password" id="confirmaSenha" required>
 
-        <!-- Campo solicitado: Tipo de Usuário (select) – por padrão "Usuário".
-             Escondido no cadastro público; administradores alteram em cadastroadmin.html -->
         <label for="tipoUsuario" class="visually-hidden">Tipo de Usuário</label>
         <select id="tipoUsuario" class="visually-hidden" aria-hidden="true">
           <option value="Usuário" selected>Usuário</option>
@@ -172,29 +172,28 @@
   </main>
 
   <script>
-    // Garante admin fixo (usuário "admin")
     function garantirAdmin(){
       let cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
       const existeAdmin = cadastros.some(u => (u.email||"").toLowerCase() === "admin");
       if(!existeAdmin){
         cadastros.push({
           nome:"Administrador",
+          apelido:"Admin",
           sexo:"MASCULINO",
           telefone:"",
           email:"admin",
           cep:"", rua:"", bairro:"", numero:"", complemento:"", referencia:"",
           visita:"NÃO", maps:"",
           senha:"pedidodeoracao",
-          fixo:true,                 // reconhecido como admin pelo sistema
+          fixo:true,
           isAdmin:true,
-          tipoUsuario:"Administrador" // novo campo
+          tipoUsuario:"Administrador"
         });
         localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
       }
     }
     garantirAdmin();
 
-    // Busca CEP no ViaCEP
     async function buscarCEP(){
       const cep = document.getElementById("cep").value.replace(/\D/g, '');
       if(cep.length !== 8) return;
@@ -209,7 +208,6 @@
       }
     }
 
-    // WhatsApp preview
     document.getElementById("telefone").addEventListener("input", () => {
       const tel = document.getElementById("telefone").value.replace(/\D/g,'');
       const whatsDiv = document.getElementById("whatsLink");
@@ -220,14 +218,12 @@
       }
     });
 
-    // Maps preview
     function previewMaps(){
       const url = document.getElementById("maps").value.trim();
       const div = document.getElementById("mapsPreview");
       div.innerHTML = url ? `🌍 <a href="${url}" target="_blank">Visualizar localização</a>` : "";
     }
 
-    // Cadastro
     document.getElementById("formCadastro").addEventListener("submit", function(e){
       e.preventDefault();
 
@@ -235,7 +231,6 @@
       const erroDiv = document.getElementById("emailErro");
       const cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
 
-      // Bloqueia e-mail duplicado
       if(cadastros.some(u => (u.email||"").toLowerCase() === email)){
         erroDiv.style.display = "block";
         return;
@@ -250,11 +245,11 @@
         return;
       }
 
-      // Lê o tipo (select oculto) – padrão "Usuário"
       const tipoUsuario = (document.getElementById("tipoUsuario")?.value || "Usuário").trim();
 
       const novoCadastro = {
         nome: document.getElementById("nome").value.trim(),
+        apelido: document.getElementById("apelido").value.trim(),
         sexo: document.querySelector("input[name='sexo']:checked")?.value,
         telefone: document.getElementById("telefone").value.trim(),
         email: email,
@@ -267,8 +262,8 @@
         visita: document.querySelector("input[name='visita']:checked")?.value,
         maps: document.getElementById("maps").value.trim(),
         senha: senha,
-        tipoUsuario: tipoUsuario,                     // novo campo salvo
-        isAdmin: (tipoUsuario === "Administrador")    // flag de compatibilidade
+        tipoUsuario: tipoUsuario,
+        isAdmin: (tipoUsuario === "Administrador")
       };
 
       cadastros.push(novoCadastro);
