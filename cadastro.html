@@ -47,8 +47,7 @@
   <header><h1>📝 Cadastro</h1></header>
   <main class="container">
     <section class="card">
-      <form id="formCadastro">
-
+      <form id="formCadastro" action="javascript:void(0);">
         <!-- Foto -->
         <div class="foto-upload">
           <img id="fotoPreview" class="foto-preview" alt="Prévia da foto">
@@ -59,7 +58,7 @@
         <input type="text" id="nome" required>
 
         <label for="apelido">Como Gosta de Ser Chamado:</label>
-        <input type="text" id="apelido">
+        <input type="text" id="apelido" placeholder="Ex: Leo, Mariazinha, Pastor João">
 
         <label for="sexo">Sexo:<span class="required">*</span></label>
         <select id="sexo" required>
@@ -77,7 +76,7 @@
         <div id="emailErro" class="erro">❌ Já existe um cadastro com este e-mail.</div>
 
         <label for="cep">CEP:</label>
-        <input type="text" id="cep" maxlength="8" onblur="buscarCEP()">
+        <input type="text" id="cep" maxlength="8" placeholder="Somente números" onblur="buscarCEP()">
         <div id="cepErro" class="erro"></div>
 
         <label for="rua">Rua:</label>
@@ -90,184 +89,4 @@
 
         <label for="bairro">Bairro:</label><input type="text" id="bairro" disabled>
         <label for="cidade">Cidade:</label><input type="text" id="cidade" disabled>
-        <label for="estado">Estado:</label><input type="text" id="estado" disabled>
-
-        <label for="visita">Aceita Visita?<span class="required">*</span></label>
-        <select id="visita" required>
-          <option value="">Selecione...</option>
-          <option value="SIM">Sim</option>
-          <option value="NÃO">Não</option>
-        </select>
-
-        <label for="maps">URL do Google Maps:</label>
-        <input type="url" id="maps" oninput="previewMaps()">
-        <div id="mapsPreview" class="preview"></div>
-
-        <label for="senha">Senha:<span class="required">*</span></label>
-        <div class="senha-container">
-          <input type="password" id="senha" required>
-          <span class="toggle-senha" onclick="toggleSenha('senha', this)">👁️</span>
-        </div>
-
-        <label for="confirmaSenha">Confirmar Senha:<span class="required">*</span></label>
-        <div class="senha-container">
-          <input type="password" id="confirmaSenha" required>
-          <span class="toggle-senha" onclick="toggleSenha('confirmaSenha', this)">👁️</span>
-        </div>
-
-        <p class="obrigatorio">⚠️ Os campos marcados com * são obrigatórios.</p>
-        <button type="submit" class="btn-main">✅ Finalizar Cadastro</button>
-      </form>
-    </section>
-  </main>
-
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyATVaYFF3Ho47Vc4bB0BOy7Q2NKLAqSHXQ",
-      authDomain: "pedidosoracao-5226e.firebaseapp.com",
-      projectId: "pedidosoracao-5226e",
-      storageBucket: "pedidosoracao-5226e.firebasestorage.app",
-      messagingSenderId: "1036424775005",
-      appId: "1:1036424775005:web:e07fb3c31ff94854c894b4",
-      measurementId: "G-DP0CCC7BGC"
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // Funções auxiliares
-    window.toggleSenha = function(id, el){
-      const input = document.getElementById(id);
-      if(input.type === "password"){ input.type = "text"; el.textContent = "🙈"; }
-      else{ input.type = "password"; el.textContent = "👁️"; }
-    }
-
-    window.buscarCEP = async function(){
-      const cep = document.getElementById("cep").value.replace(/\D/g,'');
-      const erroDiv = document.getElementById("cepErro");
-      if(cep.length !== 8) return;
-      try{
-        const resp = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-        const dados = await resp.json();
-        if(dados.erro){
-          erroDiv.style.display = "block";
-          erroDiv.innerText = "❌ CEP não encontrado. Preencha manualmente.";
-          habilitarEndereco(true);
-        } else {
-          erroDiv.style.display = "none";
-          document.getElementById("rua").value = dados.logradouro || "";
-          document.getElementById("bairro").value = dados.bairro || "";
-          document.getElementById("cidade").value = dados.localidade || "";
-          document.getElementById("estado").value = dados.uf || "";
-          habilitarEndereco(false);
-        }
-      }catch{
-        erroDiv.style.display = "block";
-        erroDiv.innerText = "❌ Erro ao buscar CEP.";
-        habilitarEndereco(true);
-      }
-    }
-    function habilitarEndereco(habilitar){
-      ["rua","bairro","cidade","estado"].forEach(id=> document.getElementById(id).disabled = !habilitar);
-    }
-
-    document.getElementById("telefone").addEventListener("input", ()=>{
-      const tel = document.getElementById("telefone").value.replace(/\D/g,'');
-      const whatsDiv = document.getElementById("whatsLink");
-      if(/^\d{10,11}$/.test(tel)){
-        whatsDiv.innerHTML = `<a href="https://wa.me/55${tel}" target="_blank">💬 Conversar no WhatsApp</a>`;
-      } else whatsDiv.innerHTML = "";
-    });
-
-    window.previewMaps = function(){
-      const url = document.getElementById("maps").value.trim();
-      const div = document.getElementById("mapsPreview");
-      div.innerHTML = url ? `<a href="${url}" target="_blank">📍 Abrir localização</a>` : "";
-    }
-
-    // Foto preview
-    const fotoInput = document.getElementById("foto");
-    const fotoPreview = document.getElementById("fotoPreview");
-    fotoInput?.addEventListener("change", e=>{
-      const file = e.target.files[0];
-      if(file){
-        const reader = new FileReader();
-        reader.onload = ev=>{
-          fotoPreview.src = ev.target.result;
-          fotoPreview.style.display = "block";
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    // Cadastro
-    document.getElementById("formCadastro").addEventListener("submit", async (e)=>{
-      e.preventDefault();
-
-      const telEl = document.getElementById("telefone");
-      telEl.value = telEl.value.replace(/\D/g, "");
-
-      if(!e.target.checkValidity()){ e.target.reportValidity(); return; }
-
-      const email = document.getElementById("email").value.trim().toLowerCase();
-
-      try{
-        const q = query(collection(db, "cadastrosUsuarios"), where("email", "==", email));
-        const snap = await getDocs(q);
-        if(!snap.empty){
-          document.getElementById("emailErro").style.display = "block";
-          return;
-        } else document.getElementById("emailErro").style.display = "none";
-      }catch(err){
-        alert("❌ Erro ao verificar e-mail.\n" + err.message);
-        return;
-      }
-
-      const senha = document.getElementById("senha").value;
-      const confirma = document.getElementById("confirmaSenha").value;
-      if(senha !== confirma){ alert("❌ As senhas não coincidem!"); return; }
-
-      let fotoBase64 = "";
-      const file = fotoInput?.files[0];
-      if(file){
-        fotoBase64 = await new Promise(res=>{
-          const r = new FileReader();
-          r.onload = ev=> res(ev.target.result);
-          r.readAsDataURL(file);
-        });
-      }
-
-      const novoCadastro = {
-        nome: document.getElementById("nome").value.trim(),
-        apelido: document.getElementById("apelido").value.trim(),
-        sexo: document.getElementById("sexo").value,
-        telefone: document.getElementById("telefone").value.trim(),
-        email,
-        cep: document.getElementById("cep").value.trim(),
-        rua: document.getElementById("rua").value.trim(),
-        numero: document.getElementById("numero").value.trim(),
-        complemento: document.getElementById("complemento").value.trim(),
-        bairro: document.getElementById("bairro").value.trim(),
-        cidade: document.getElementById("cidade").value.trim(),
-        estado: document.getElementById("estado").value.trim(),
-        visita: document.getElementById("visita").value,
-        maps: document.getElementById("maps").value.trim(),
-        senha,
-        foto: fotoBase64
-      };
-
-      try{
-        await addDoc(collection(db, "cadastrosUsuarios"), novoCadastro);
-        alert("✅ Cadastro realizado com sucesso!");
-        window.location.href = "index.html";
-      }catch(err){
-        console.error(err);
-        alert("❌ Erro ao salvar cadastro.\n" + err.message);
-      }
-    });
-  </script>
-</body>
-</html>
+        <label for="est
