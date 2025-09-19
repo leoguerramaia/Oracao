@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Contatos WhatsApp - Pedidos de Oração</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#fff7f2;
+      --card:#ffffff;
+      --text:#2c3e50;
+      --muted:#6b7b8c;
+      --primary:#b22222;
+      --primary-hov:#800000;
+      --accent:#ff4500;
+      --accent-hov:#e03c00;
+      --gold:#ffd700;
+      --ring:rgba(178,34,34,.35);
+    }
+
+    *{box-sizing:border-box;}
+
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    header{
+      background:var(--primary);
+      color:var(--gold);
+      padding:20px;
+      text-align:center;
+      box-shadow:0 2px 10px rgba(0,0,0,.15);
+      text-shadow:0 0 6px rgba(255,215,0,0.6);
+    }
+    header h1{margin:0;font-size:24px}
+
+    main{max-width:800px;margin:24px auto;padding:0 16px;}
+
+    .card{
+      background:var(--card);
+      border-radius:14px;
+      padding:20px;
+      margin-bottom:16px;
+      box-shadow:0 4px 10px rgba(0,0,0,.08);
+      border:1px solid rgba(0,0,0,.05);
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .nome{font-size:18px;font-weight:700;color:var(--primary)}
+    .telefone{font-size:15px;color:var(--muted)}
+
+    .whats-link{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      background:#25d366;
+      color:#fff;
+      padding:8px 12px;
+      border-radius:8px;
+      font-size:14px;
+      font-weight:600;
+      text-decoration:none;
+      width:max-content;
+      transition:.2s;
+    }
+    .whats-link:hover{background:#1ebe5c}
+    .whats-link img{width:20px;height:20px}
+
+    @media(max-width:768px){
+      header h1{font-size:20px}
+      .nome{font-size:16px}
+    }
+  </style>
+</head>
+<body>
+  <header><h1>📱 Contatos do Grupo</h1></header>
+  <main id="listaContatos"></main>
+
+  <script>
+    // 🔒 Verifica login
+    const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado") || "null");
+    if(!usuarioLogado){
+      alert("❌ Você precisa estar logado para acessar esta página!");
+      window.location.href = "login.html";
+    }
+
+    // Recupera cadastros
+    const cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
+    const lista = document.getElementById("listaContatos");
+
+    if(cadastros.length === 0){
+      lista.innerHTML = "<p>Nenhum contato encontrado.</p>";
+    } else {
+      cadastros.forEach(pessoa=>{
+        if(!pessoa.telefone) return;
+
+        const apelido = pessoa.apelido ? ` (${pessoa.apelido})` : "";
+        const nomeCompleto = `${pessoa.nome || "Sem nome"}${apelido}`;
+        const tel = (pessoa.telefone || "").replace(/\D/g,'');
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+          <div class="nome">${nomeCompleto}</div>
+          <div class="telefone">📞 +55 ${tel}</div>
+          <a class="whats-link" href="https://wa.me/55${tel}" target="_blank">
+            <img src="whatsapp.png" alt="WhatsApp"> Falar com ${pessoa.nome}
+          </a>
+        `;
+
+        lista.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>
