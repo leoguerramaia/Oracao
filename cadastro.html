@@ -13,8 +13,11 @@
       --primary:#b22222;
       --primary-hov:#800000;
       --accent:#ff4500;
+      --accent-hov:#e03c00;
       --ring:rgba(178,34,34,.35);
     }
+    *, *::before, *::after { box-sizing: border-box; }
+
     body{
       margin:0;
       font-family:system-ui, Arial, sans-serif;
@@ -28,6 +31,7 @@
       text-align:center;
     }
     header h1{margin:0;font-size:24px;}
+
     .container{max-width:720px;margin:32px auto;padding:0 16px;}
     .card{
       background:var(--card);
@@ -35,30 +39,53 @@
       padding:24px;
       box-shadow:0 12px 30px rgba(0,0,0,.08);
     }
+
     form{display:flex;flex-direction:column;gap:12px}
     label{font-weight:600;margin-top:8px}
     label .required{color:var(--primary);margin-left:4px}
+
     input, select, button{
       width:100%;padding:12px 14px;border-radius:10px;font-size:15px;
       border:1px solid #e1e5ea;outline:none;background:#fff;
     }
     input:focus, select:focus{border-color:var(--primary);box-shadow:0 0 0 4px var(--ring)}
+
     .erro{color:var(--primary);font-size:13px;display:none}
     .msg{color:var(--muted);font-size:13px;margin-top:-6px}
+
     .preview{font-size:14px;margin-top:6px}
     .preview a{color:var(--primary);text-decoration:none;display:flex;align-items:center;gap:6px}
     .preview img{width:20px;height:20px}
-    .senha-container{position:relative;display:flex;align-items:center;}
-    .senha-container input{width:100%;padding-right:40px;}
-    .toggle-senha{position:absolute;right:10px;cursor:pointer;font-size:18px;color:var(--muted);}
-    .obrigatorio{font-size:13px;color:var(--muted);margin-top:4px;}
+
+    .senha-container{
+      position:relative;
+      display:flex;
+      align-items:center;
+    }
+    .senha-container input{
+      width:100%;
+      padding-right:40px;
+    }
+    .toggle-senha{
+      position:absolute;
+      right:10px;
+      cursor:pointer;
+      font-size:18px;
+      color:var(--muted);
+    }
+
+    .obrigatorio{
+      font-size:13px;
+      color:var(--muted);
+      margin-top:4px;
+    }
+
     button{border:none;font-weight:700;cursor:pointer;transition:.3s}
     .btn-main{background:var(--primary);color:#fff}
     .btn-main:hover{background:var(--primary-hov)}
+
     .row{display:flex;gap:12px;flex-wrap:wrap}
     .row>div{flex:1;min-width:150px}
-    .foto-upload{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:16px;}
-    .foto-preview{width:100px;height:100px;border-radius:50%;border:2px solid var(--primary);object-fit:cover;display:none;}
   </style>
 </head>
 <body>
@@ -66,19 +93,13 @@
   <main class="container">
     <section class="card">
       <form id="formCadastro">
-        
-        <!-- Foto -->
-        <div class="foto-upload">
-          <img id="fotoPreview" class="foto-preview" alt="Prévia da foto">
-          <input type="file" id="foto" accept="image/*" capture="environment">
-        </div>
-
         <label for="nome">Nome:<span class="required">*</span></label>
         <input type="text" id="nome" required>
 
         <label for="apelido">Como Gosta de Ser Chamado:</label>
         <input type="text" id="apelido" placeholder="Ex: Leo, Mariazinha, Pastor João">
 
+        <!-- Sexo -->
         <label for="sexo">Sexo:<span class="required">*</span></label>
         <select id="sexo" required>
           <option value="">Selecione...</option>
@@ -86,18 +107,22 @@
           <option value="FEMININO">Feminino</option>
         </select>
 
+        <!-- Telefone -->
         <label for="telefone">Telefone (DDD + número):<span class="required">*</span></label>
-        <input type="tel" id="telefone" placeholder="11987654321" pattern="\d{10,11}" required>
+        <input type="tel" id="telefone" placeholder="Ex: 11987654321" pattern="\d{10,11}" required>
         <div id="whatsLink" class="preview"></div>
 
+        <!-- E-mail -->
         <label for="email">E-mail:<span class="required">*</span></label>
         <input type="email" id="email" required>
         <div id="emailErro" class="erro">❌ Já existe um cadastro com este e-mail.</div>
 
+        <!-- CEP -->
         <label for="cep">CEP:</label>
         <input type="text" id="cep" maxlength="8" placeholder="Somente números" onblur="buscarCEP()">
         <div id="cepErro" class="erro"></div>
 
+        <!-- Endereço -->
         <label for="rua">Rua:</label>
         <input type="text" id="rua" disabled>
 
@@ -110,6 +135,7 @@
         <label for="cidade">Cidade:</label><input type="text" id="cidade" disabled>
         <label for="estado">Estado:</label><input type="text" id="estado" disabled>
 
+        <!-- Aceita visita -->
         <label for="visita">Aceita Visita?<span class="required">*</span></label>
         <select id="visita" required>
           <option value="">Selecione...</option>
@@ -117,10 +143,12 @@
           <option value="NÃO">Não</option>
         </select>
 
+        <!-- Google Maps -->
         <label for="maps">URL do Google Maps:</label>
         <input type="url" id="maps" placeholder="Cole aqui a URL do Maps" oninput="previewMaps()">
         <div id="mapsPreview" class="preview"></div>
 
+        <!-- Senha -->
         <label for="senha">Senha:<span class="required">*</span></label>
         <div class="senha-container">
           <input type="password" id="senha" required>
@@ -133,59 +161,24 @@
           <span class="toggle-senha" onclick="toggleSenha('confirmaSenha', this)">👁️</span>
         </div>
 
-        <p class="obrigatorio">⚠️ Os campos marcados com * são obrigatórios.</p>
+        <p class="obrigatorio">⚠️ Os campos marcados com * são de preenchimento obrigatório.</p>
+
         <button type="submit" class="btn-main">✅ Finalizar Cadastro</button>
       </form>
     </section>
   </main>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
-
-    // Config Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyATVaYFF3Ho47Vc4bB0BOy7Q2NKLAqSHXQ",
-      authDomain: "pedidosoracao-5226e.firebaseapp.com",
-      projectId: "pedidosoracao-5226e",
-      storageBucket: "pedidosoracao-5226e.firebasestorage.app",
-      messagingSenderId: "1036424775005",
-      appId: "1:1036424775005:web:e07fb3c31ff94854c894b4",
-      measurementId: "G-DP0CCC7BGC"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // Preview foto
-    document.getElementById("foto").addEventListener("change", e=>{
-      const file = e.target.files[0];
-      if(file){
-        const reader = new FileReader();
-        reader.onload = ev=>{
-          document.getElementById("fotoPreview").src = ev.target.result;
-          document.getElementById("fotoPreview").style.display = "block";
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    // Mostrar/ocultar senha
-    window.toggleSenha = function(id, el){
-      const input = document.getElementById(id);
-      if(input.type === "password"){ input.type = "text"; el.textContent = "🙈"; }
-      else{ input.type = "password"; el.textContent = "👁️"; }
-    }
-
+  <script>
     // CEP automático
-    window.buscarCEP = async function(){
+    async function buscarCEP(){
       const cep = document.getElementById("cep").value.replace(/\D/g,'');
       const erroDiv = document.getElementById("cepErro");
       if(cep.length !== 8) return;
+
       try{
         const resp = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
         const dados = await resp.json();
+
         if(dados.erro){
           erroDiv.style.display = "block";
           erroDiv.innerText = "❌ CEP não encontrado. Preencha manualmente.";
@@ -200,58 +193,71 @@
         }
       }catch{
         erroDiv.style.display = "block";
-        erroDiv.innerText = "❌ Erro ao buscar CEP.";
+        erroDiv.innerText = "❌ Erro ao buscar CEP. Preencha manualmente.";
         habilitarEndereco(true);
       }
     }
+
     function habilitarEndereco(habilitar){
-      ["rua","bairro","cidade","estado"].forEach(id=> document.getElementById(id).disabled = !habilitar);
+      ["rua","bairro","cidade","estado"].forEach(id=>{
+        document.getElementById(id).disabled = !habilitar;
+      });
     }
 
     // WhatsApp preview
-    document.getElementById("telefone").addEventListener("input", ()=>{
+    document.getElementById("telefone").addEventListener("input", () => {
       const tel = document.getElementById("telefone").value.replace(/\D/g,'');
       const whatsDiv = document.getElementById("whatsLink");
       if(/^\d{10,11}$/.test(tel)){
-        whatsDiv.innerHTML = `<a href="https://wa.me/55${tel}" target="_blank">💬 Conversar no WhatsApp</a>`;
-      } else whatsDiv.innerHTML = "";
+        whatsDiv.innerHTML = `<a href="https://wa.me/55${tel}" target="_blank">
+          <img src="whatsapp.png" alt="WhatsApp"> Conversar no WhatsApp
+        </a>`;
+      } else {
+        whatsDiv.innerHTML = "";
+      }
     });
 
     // Maps preview
-    window.previewMaps = function(){
+    function previewMaps(){
       const url = document.getElementById("maps").value.trim();
       const div = document.getElementById("mapsPreview");
-      div.innerHTML = url ? `<a href="${url}" target="_blank">📍 Abrir localização</a>` : "";
+      div.innerHTML = url ? `<a href="${url}" target="_blank">
+        <img src="GPS.png" alt="Maps"> Abrir localização no Google Maps
+      </a>` : "";
     }
 
-    // Envio do cadastro para o Firestore
-    document.getElementById("formCadastro").addEventListener("submit", async (e)=>{
+    // Mostrar/ocultar senha
+    function toggleSenha(id, el){
+      const input = document.getElementById(id);
+      if(input.type === "password"){
+        input.type = "text";
+        el.textContent = "🙈";
+      } else {
+        input.type = "password";
+        el.textContent = "👁️";
+      }
+    }
+
+    // Validação de cadastro
+    document.getElementById("formCadastro").addEventListener("submit", function(e){
       e.preventDefault();
 
       const email = document.getElementById("email").value.trim().toLowerCase();
+      const erroDiv = document.getElementById("emailErro");
+      const cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
 
-      // Verifica duplicidade de e-mail
-      const q = query(collection(db,"cadastrosUsuarios"), where("email","==",email));
-      const snap = await getDocs(q);
-      if(!snap.empty){
-        document.getElementById("emailErro").style.display = "block";
+      if(cadastros.some(u => (u.email||"").toLowerCase() === email)){
+        erroDiv.style.display = "block";
         return;
-      } else document.getElementById("emailErro").style.display = "none";
+      } else {
+        erroDiv.style.display = "none";
+      }
 
-      // Senha
       const senha = document.getElementById("senha").value;
       const confirma = document.getElementById("confirmaSenha").value;
-      if(senha !== confirma){ alert("❌ As senhas não coincidem!"); return; }
-
-      // Foto em Base64
-      let fotoBase64 = "";
-      const fotoInput = document.getElementById("foto").files[0];
-      if(fotoInput){
-        fotoBase64 = await new Promise(resolve=>{
-          const reader = new FileReader();
-          reader.onload = ev => resolve(ev.target.result);
-          reader.readAsDataURL(fotoInput);
-        });
+      if(senha !== confirma){
+        alert("❌ As senhas não coincidem!");
+        return;
       }
 
       const novoCadastro = {
@@ -269,18 +275,14 @@
         estado: document.getElementById("estado").value.trim(),
         visita: document.getElementById("visita").value,
         maps: document.getElementById("maps").value.trim(),
-        senha: senha,
-        foto: fotoBase64
+        senha: senha
       };
 
-      try{
-        await addDoc(collection(db,"cadastrosUsuarios"), novoCadastro);
-        alert("✅ Cadastro realizado com sucesso!");
-        window.location.href = "index.html";
-      }catch(err){
-        console.error(err);
-        alert("❌ Erro ao salvar cadastro.");
-      }
+      cadastros.push(novoCadastro);
+      localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
+
+      alert("✅ Cadastro realizado com sucesso!");
+      window.location.href = "index.html";
     });
   </script>
 </body>
