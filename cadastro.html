@@ -16,93 +16,76 @@
       --accent-hov:#e03c00;
       --ring:rgba(178,34,34,.35);
     }
-
-    /* ✅ evita overflow dos campos (inclui padding/borda no width) */
     *, *::before, *::after { box-sizing: border-box; }
 
     body{
       margin:0;
-      font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-family:system-ui, Arial, sans-serif;
       background:var(--bg);
       color:var(--text);
     }
-
     header{
       background:var(--primary);
       color:#ffd700;
       padding:20px;
       text-align:center;
-      box-shadow:0 2px 10px rgba(0,0,0,.15);
-      text-shadow:0 0 6px rgba(255,215,0,0.6);
     }
-    header h1{margin:0;font-size:24px;letter-spacing:.5px}
+    header h1{margin:0;font-size:24px;}
 
-    .container{
-      max-width:720px;
-      margin:32px auto;
-      padding:0 16px;
-    }
-
+    .container{max-width:720px;margin:32px auto;padding:0 16px;}
     .card{
       background:var(--card);
       border-radius:14px;
       padding:24px;
       box-shadow:0 12px 30px rgba(0,0,0,.08);
-      border:1px solid rgba(0,0,0,.04);
     }
 
     form{display:flex;flex-direction:column;gap:12px}
-
-    label{display:block;font-weight:600;margin-top:8px}
+    label{font-weight:600;margin-top:8px}
     label .required{color:var(--primary);margin-left:4px}
 
     input, select, button{
-      width:100%;
-      padding:12px 14px;
-      border-radius:10px;
-      font-size:15px;
-      border:1px solid #e1e5ea;
-      outline:none;
-      background:#fff;
-      /* ✅ garante que o width 100% não estoure */
-      box-sizing: border-box;
+      width:100%;padding:12px 14px;border-radius:10px;font-size:15px;
+      border:1px solid #e1e5ea;outline:none;background:#fff;
     }
     input:focus, select:focus{border-color:var(--primary);box-shadow:0 0 0 4px var(--ring)}
 
-    /* opcional: melhora a aparência do select em alguns navegadores */
-    select{
-      appearance:auto;          /* mantenha o arrow nativo */
-      min-width:0;              /* evita estourar em layouts flex */
+    .erro{color:var(--primary);font-size:13px;display:none}
+    .msg{color:var(--muted);font-size:13px;margin-top:-6px}
+
+    .preview{font-size:14px;margin-top:6px}
+    .preview a{color:var(--primary);text-decoration:none;display:flex;align-items:center;gap:6px}
+    .preview img{width:20px;height:20px}
+
+    .senha-container{
+      position:relative;
+      display:flex;
+      align-items:center;
+    }
+    .senha-container input{
+      width:100%;
+      padding-right:40px;
+    }
+    .toggle-senha{
+      position:absolute;
+      right:10px;
+      cursor:pointer;
+      font-size:18px;
+      color:var(--muted);
     }
 
-    .erro{color:var(--primary);font-size:13px;display:none}
+    .obrigatorio{
+      font-size:13px;
+      color:var(--muted);
+      margin-top:4px;
+    }
 
     button{border:none;font-weight:700;cursor:pointer;transition:.3s}
     .btn-main{background:var(--primary);color:#fff}
     .btn-main:hover{background:var(--primary-hov)}
-    .btn-home{background:#fff;color:var(--accent);border:1px solid #e1e5ea}
-    .btn-home:hover{background:#f7f9fb;color:var(--accent-hov)}
 
     .row{display:flex;gap:12px;flex-wrap:wrap}
-    .row>div{flex:1;min-width:180px}
-
-    .preview{font-size:14px}
-    .preview a{color:var(--primary);text-decoration:none}
-
-    .visually-hidden{
-      position:absolute !important;
-      width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
-      clip:rect(0 0 0 0);white-space:nowrap;border:0;
-    }
-
-    @media (max-width:768px){
-      header h1{font-size:20px}
-      .container{margin:16px auto}
-      .card{padding:18px}
-      button{font-size:14px;padding:10px}
-      .row{flex-direction:column}
-      .row>div{min-width:100%}
-    }
+    .row>div{flex:1;min-width:150px}
   </style>
 </head>
 <body>
@@ -116,7 +99,7 @@
         <label for="apelido">Como Gosta de Ser Chamado:</label>
         <input type="text" id="apelido" placeholder="Ex: Leo, Mariazinha, Pastor João">
 
-        <!-- Sexo como lista -->
+        <!-- Sexo -->
         <label for="sexo">Sexo:<span class="required">*</span></label>
         <select id="sexo" required>
           <option value="">Selecione...</option>
@@ -124,31 +107,35 @@
           <option value="FEMININO">Feminino</option>
         </select>
 
-        <label for="telefone">Telefone:<span class="required">*</span></label>
-        <input type="tel" id="telefone" pattern="\d{10,11}" required>
+        <!-- Telefone -->
+        <label for="telefone">Telefone (DDD + número):<span class="required">*</span></label>
+        <input type="tel" id="telefone" placeholder="Ex: 11987654321" pattern="\d{10,11}" required>
         <div id="whatsLink" class="preview"></div>
 
+        <!-- E-mail -->
         <label for="email">E-mail:<span class="required">*</span></label>
         <input type="email" id="email" required>
         <div id="emailErro" class="erro">❌ Já existe um cadastro com este e-mail.</div>
 
+        <!-- CEP -->
         <label for="cep">CEP:</label>
-        <input type="text" id="cep" maxlength="8" onblur="buscarCEP()">
+        <input type="text" id="cep" maxlength="8" placeholder="Somente números" onblur="buscarCEP()">
+        <div id="cepErro" class="erro"></div>
 
-        <div id="enderecoAuto" style="display:none;">
-          <label for="rua">Rua:</label><input type="text" id="rua">
-          <label for="bairro">Bairro:</label><input type="text" id="bairro">
-        </div>
+        <!-- Endereço -->
+        <label for="rua">Rua:</label>
+        <input type="text" id="rua" disabled>
 
         <div class="row">
           <div><label for="numero">Número:</label><input type="text" id="numero"></div>
           <div><label for="complemento">Complemento:</label><input type="text" id="complemento"></div>
         </div>
 
-        <label for="referencia">Ponto de Referência:</label>
-        <input type="text" id="referencia">
+        <label for="bairro">Bairro:</label><input type="text" id="bairro" disabled>
+        <label for="cidade">Cidade:</label><input type="text" id="cidade" disabled>
+        <label for="estado">Estado:</label><input type="text" id="estado" disabled>
 
-        <!-- Aceita visita como lista -->
+        <!-- Aceita visita -->
         <label for="visita">Aceita Visita?<span class="required">*</span></label>
         <select id="visita" required>
           <option value="">Selecione...</option>
@@ -156,46 +143,147 @@
           <option value="NÃO">Não</option>
         </select>
 
+        <!-- Google Maps -->
         <label for="maps">URL do Google Maps:</label>
-        <input type="url" id="maps" oninput="previewMaps()">
+        <input type="url" id="maps" placeholder="Cole aqui a URL do Maps" oninput="previewMaps()">
         <div id="mapsPreview" class="preview"></div>
 
+        <!-- Senha -->
         <label for="senha">Senha:<span class="required">*</span></label>
-        <input type="password" id="senha" required>
+        <div class="senha-container">
+          <input type="password" id="senha" required>
+          <span class="toggle-senha" onclick="toggleSenha('senha', this)">👁️</span>
+        </div>
 
         <label for="confirmaSenha">Confirmar Senha:<span class="required">*</span></label>
-        <input type="password" id="confirmaSenha" required>
+        <div class="senha-container">
+          <input type="password" id="confirmaSenha" required>
+          <span class="toggle-senha" onclick="toggleSenha('confirmaSenha', this)">👁️</span>
+        </div>
 
-        <!-- Campo oculto de tipo de usuário (mantido) -->
-        <label for="tipoUsuario" class="visually-hidden">Tipo de Usuário</label>
-        <select id="tipoUsuario" class="visually-hidden" aria-hidden="true">
-          <option value="Usuário" selected>Usuário</option>
-          <option value="Administrador">Administrador</option>
-        </select>
+        <p class="obrigatorio">⚠️ Os campos marcados com * são de preenchimento obrigatório.</p>
 
         <button type="submit" class="btn-main">✅ Finalizar Cadastro</button>
-        <button type="button" class="btn-home" onclick="location.href='index.html'">🏠 Página Inicial</button>
       </form>
     </section>
   </main>
 
   <script>
+    // CEP automático
     async function buscarCEP(){
-      const cep = document.getElementById("cep").value.replace(/\D/g, '');
+      const cep = document.getElementById("cep").value.replace(/\D/g,'');
+      const erroDiv = document.getElementById("cepErro");
       if(cep.length !== 8) return;
+
       try{
         const resp = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
         const dados = await resp.json();
-        document.getElementById("enderecoAuto").style.display = "block";
-        document.getElementById("rua").value = dados.logradouro || "";
-        document.getElementById("bairro").value = dados.bairro || "";
-      }catch(e){
-        document.getElementById("enderecoAuto").style.display = "block";
+
+        if(dados.erro){
+          erroDiv.style.display = "block";
+          erroDiv.innerText = "❌ CEP não encontrado. Preencha manualmente.";
+          habilitarEndereco(true);
+        } else {
+          erroDiv.style.display = "none";
+          document.getElementById("rua").value = dados.logradouro || "";
+          document.getElementById("bairro").value = dados.bairro || "";
+          document.getElementById("cidade").value = dados.localidade || "";
+          document.getElementById("estado").value = dados.uf || "";
+          habilitarEndereco(false);
+        }
+      }catch{
+        erroDiv.style.display = "block";
+        erroDiv.innerText = "❌ Erro ao buscar CEP. Preencha manualmente.";
+        habilitarEndereco(true);
       }
     }
 
+    function habilitarEndereco(habilitar){
+      ["rua","bairro","cidade","estado"].forEach(id=>{
+        document.getElementById(id).disabled = !habilitar;
+      });
+    }
+
+    // WhatsApp preview
     document.getElementById("telefone").addEventListener("input", () => {
       const tel = document.getElementById("telefone").value.replace(/\D/g,'');
       const whatsDiv = document.getElementById("whatsLink");
       if(/^\d{10,11}$/.test(tel)){
-        whatsDiv.innerHTML = `📱 <a href=
+        whatsDiv.innerHTML = `<a href="https://wa.me/55${tel}" target="_blank">
+          <img src="whatsapp.png" alt="WhatsApp"> Conversar no WhatsApp
+        </a>`;
+      } else {
+        whatsDiv.innerHTML = "";
+      }
+    });
+
+    // Maps preview
+    function previewMaps(){
+      const url = document.getElementById("maps").value.trim();
+      const div = document.getElementById("mapsPreview");
+      div.innerHTML = url ? `<a href="${url}" target="_blank">
+        <img src="GPS.png" alt="Maps"> Abrir localização no Google Maps
+      </a>` : "";
+    }
+
+    // Mostrar/ocultar senha
+    function toggleSenha(id, el){
+      const input = document.getElementById(id);
+      if(input.type === "password"){
+        input.type = "text";
+        el.textContent = "🙈";
+      } else {
+        input.type = "password";
+        el.textContent = "👁️";
+      }
+    }
+
+    // Validação de cadastro
+    document.getElementById("formCadastro").addEventListener("submit", function(e){
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const erroDiv = document.getElementById("emailErro");
+      const cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
+
+      if(cadastros.some(u => (u.email||"").toLowerCase() === email)){
+        erroDiv.style.display = "block";
+        return;
+      } else {
+        erroDiv.style.display = "none";
+      }
+
+      const senha = document.getElementById("senha").value;
+      const confirma = document.getElementById("confirmaSenha").value;
+      if(senha !== confirma){
+        alert("❌ As senhas não coincidem!");
+        return;
+      }
+
+      const novoCadastro = {
+        nome: document.getElementById("nome").value.trim(),
+        apelido: document.getElementById("apelido").value.trim(),
+        sexo: document.getElementById("sexo").value,
+        telefone: document.getElementById("telefone").value.trim(),
+        email: email,
+        cep: document.getElementById("cep").value.trim(),
+        rua: document.getElementById("rua").value.trim(),
+        numero: document.getElementById("numero").value.trim(),
+        complemento: document.getElementById("complemento").value.trim(),
+        bairro: document.getElementById("bairro").value.trim(),
+        cidade: document.getElementById("cidade").value.trim(),
+        estado: document.getElementById("estado").value.trim(),
+        visita: document.getElementById("visita").value,
+        maps: document.getElementById("maps").value.trim(),
+        senha: senha
+      };
+
+      cadastros.push(novoCadastro);
+      localStorage.setItem("cadastrosUsuarios", JSON.stringify(cadastros));
+
+      alert("✅ Cadastro realizado com sucesso!");
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>
