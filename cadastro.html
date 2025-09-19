@@ -5,7 +5,6 @@
   <title>Cadastro - Pedidos de Oração</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    /* ==== estilos originais preservados ==== */
     :root{
       --bg:#fff7f2;
       --card:#ffffff;
@@ -49,7 +48,7 @@
   <main class="container">
     <section class="card">
       <form id="formCadastro">
-        
+
         <!-- Foto -->
         <div class="foto-upload">
           <img id="fotoPreview" class="foto-preview" alt="Prévia da foto">
@@ -60,7 +59,7 @@
         <input type="text" id="nome" required>
 
         <label for="apelido">Como Gosta de Ser Chamado:</label>
-        <input type="text" id="apelido" placeholder="Ex: Leo, Mariazinha, Pastor João">
+        <input type="text" id="apelido">
 
         <label for="sexo">Sexo:<span class="required">*</span></label>
         <select id="sexo" required>
@@ -70,7 +69,7 @@
         </select>
 
         <label for="telefone">Telefone (DDD + número):<span class="required">*</span></label>
-        <input type="tel" id="telefone" placeholder="11987654321" pattern="\d{10,11}" required>
+        <input type="tel" id="telefone" placeholder="11987654321" required>
         <div id="whatsLink" class="preview"></div>
 
         <label for="email">E-mail:<span class="required">*</span></label>
@@ -78,7 +77,7 @@
         <div id="emailErro" class="erro">❌ Já existe um cadastro com este e-mail.</div>
 
         <label for="cep">CEP:</label>
-        <input type="text" id="cep" maxlength="8" placeholder="Somente números" onblur="buscarCEP()">
+        <input type="text" id="cep" maxlength="8" onblur="buscarCEP()">
         <div id="cepErro" class="erro"></div>
 
         <label for="rua">Rua:</label>
@@ -101,7 +100,7 @@
         </select>
 
         <label for="maps">URL do Google Maps:</label>
-        <input type="url" id="maps" placeholder="Cole aqui a URL do Maps" oninput="previewMaps()">
+        <input type="url" id="maps" oninput="previewMaps()">
         <div id="mapsPreview" class="preview"></div>
 
         <label for="senha">Senha:<span class="required">*</span></label>
@@ -122,7 +121,7 @@
     </section>
   </main>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
@@ -139,27 +138,13 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Foto preview
-    document.getElementById("foto").addEventListener("change", e=>{
-      const file = e.target.files[0];
-      if(file){
-        const reader = new FileReader();
-        reader.onload = ev=>{
-          document.getElementById("fotoPreview").src = ev.target.result;
-          document.getElementById("fotoPreview").style.display = "block";
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    // Toggle senha
+    // Funções auxiliares
     window.toggleSenha = function(id, el){
       const input = document.getElementById(id);
       if(input.type === "password"){ input.type = "text"; el.textContent = "🙈"; }
       else{ input.type = "password"; el.textContent = "👁️"; }
     }
 
-    // CEP
     window.buscarCEP = async function(){
       const cep = document.getElementById("cep").value.replace(/\D/g,'');
       const erroDiv = document.getElementById("cepErro");
@@ -189,7 +174,6 @@
       ["rua","bairro","cidade","estado"].forEach(id=> document.getElementById(id).disabled = !habilitar);
     }
 
-    // WhatsApp preview
     document.getElementById("telefone").addEventListener("input", ()=>{
       const tel = document.getElementById("telefone").value.replace(/\D/g,'');
       const whatsDiv = document.getElementById("whatsLink");
@@ -198,38 +182,61 @@
       } else whatsDiv.innerHTML = "";
     });
 
-    // Maps preview
     window.previewMaps = function(){
       const url = document.getElementById("maps").value.trim();
       const div = document.getElementById("mapsPreview");
       div.innerHTML = url ? `<a href="${url}" target="_blank">📍 Abrir localização</a>` : "";
     }
 
-    // Envio Firestore
+    // Foto preview
+    const fotoInput = document.getElementById("foto");
+    const fotoPreview = document.getElementById("fotoPreview");
+    fotoInput?.addEventListener("change", e=>{
+      const file = e.target.files[0];
+      if(file){
+        const reader = new FileReader();
+        reader.onload = ev=>{
+          fotoPreview.src = ev.target.result;
+          fotoPreview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Cadastro
     document.getElementById("formCadastro").addEventListener("submit", async (e)=>{
       e.preventDefault();
 
+      const telEl = document.getElementById("telefone");
+      telEl.value = telEl.value.replace(/\D/g, "");
+
+      if(!e.target.checkValidity()){ e.target.reportValidity(); return; }
+
       const email = document.getElementById("email").value.trim().toLowerCase();
 
-      // Verifica e-mail duplicado
-      const q = query(collection(db,"cadastrosUsuarios"), where("email","==",email));
-      const snap = await getDocs(q);
-      if(!snap.empty){
-        document.getElementById("emailErro").style.display = "block";
+      try{
+        const q = query(collection(db, "cadastrosUsuarios"), where("email", "==", email));
+        const snap = await getDocs(q);
+        if(!snap.empty){
+          document.getElementById("emailErro").style.display = "block";
+          return;
+        } else document.getElementById("emailErro").style.display = "none";
+      }catch(err){
+        alert("❌ Erro ao verificar e-mail.\n" + err.message);
         return;
-      } else document.getElementById("emailErro").style.display = "none";
+      }
 
       const senha = document.getElementById("senha").value;
       const confirma = document.getElementById("confirmaSenha").value;
       if(senha !== confirma){ alert("❌ As senhas não coincidem!"); return; }
 
       let fotoBase64 = "";
-      const fotoInput = document.getElementById("foto").files[0];
-      if(fotoInput){
-        fotoBase64 = await new Promise(resolve=>{
-          const reader = new FileReader();
-          reader.onload = ev => resolve(ev.target.result);
-          reader.readAsDataURL(fotoInput);
+      const file = fotoInput?.files[0];
+      if(file){
+        fotoBase64 = await new Promise(res=>{
+          const r = new FileReader();
+          r.onload = ev=> res(ev.target.result);
+          r.readAsDataURL(file);
         });
       }
 
@@ -238,7 +245,7 @@
         apelido: document.getElementById("apelido").value.trim(),
         sexo: document.getElementById("sexo").value,
         telefone: document.getElementById("telefone").value.trim(),
-        email: email,
+        email,
         cep: document.getElementById("cep").value.trim(),
         rua: document.getElementById("rua").value.trim(),
         numero: document.getElementById("numero").value.trim(),
@@ -248,17 +255,17 @@
         estado: document.getElementById("estado").value.trim(),
         visita: document.getElementById("visita").value,
         maps: document.getElementById("maps").value.trim(),
-        senha: senha,
+        senha,
         foto: fotoBase64
       };
 
       try{
-        await addDoc(collection(db,"cadastrosUsuarios"), novoCadastro);
+        await addDoc(collection(db, "cadastrosUsuarios"), novoCadastro);
         alert("✅ Cadastro realizado com sucesso!");
         window.location.href = "index.html";
       }catch(err){
         console.error(err);
-        alert("❌ Erro ao salvar cadastro.");
+        alert("❌ Erro ao salvar cadastro.\n" + err.message);
       }
     });
   </script>
