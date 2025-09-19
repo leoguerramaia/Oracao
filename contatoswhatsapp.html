@@ -235,12 +235,12 @@
           <div class="detalhes">
             <div class="telefone">📞 +55 ${tel}</div>
             <div class="endereco">🏠 ${endereco}</div>
-            ${pessoa.maps ? `<a class="maps-link" href="${pessoa.maps}" target="_blank">
-              <img src="GPS.png" alt="GPS"> Localização da Residência
-            </a>` : ""}
             <a class="whats-link" href="https://wa.me/55${tel}" target="_blank">
               <img src="whatsapp.png" alt="WhatsApp"> Falar com ${pessoa.nome}
             </a>
+            ${pessoa.maps ? `<a class="maps-link" href="${pessoa.maps}" target="_blank">
+              <img src="GPS.png" alt="GPS"> Localização da Residência
+            </a>` : ""}
             <button class="agenda-btn" onclick='salvarAgenda(${JSON.stringify(pessoa)})'>💾 Salvar na Agenda</button>
           </div>
         `;
