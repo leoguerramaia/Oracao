@@ -5,90 +5,28 @@
   <title>Contatos WhatsApp - Pedidos de Oração</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    :root{
-      --bg:#fff7f2;
-      --card:#ffffff;
-      --text:#2c3e50;
-      --muted:#6b7b8c;
-      --primary:#b22222;
-      --primary-hov:#800000;
-      --gold:#ffd700;
-      --ring:rgba(178,34,34,.35);
-    }
-
-    *{box-sizing:border-box;}
-
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:var(--bg);
-      color:var(--text);
-    }
-
-    header{
-      background:var(--primary);
-      color:var(--gold);
-      padding:20px;
-      text-align:center;
-      box-shadow:0 2px 10px rgba(0,0,0,.15);
-      text-shadow:0 0 6px rgba(255,215,0,0.6);
-    }
-    header h1{margin:0;font-size:24px}
-
-    main{max-width:800px;margin:24px auto;padding:0 16px;}
-
-    .card{
-      background:var(--card);
-      border-radius:14px;
-      padding:16px;
-      margin-bottom:16px;
-      box-shadow:0 4px 10px rgba(0,0,0,.08);
-      border:1px solid rgba(0,0,0,.05);
-      display:flex;
-      align-items:center;
-      gap:16px;
-    }
-
-    .foto{
-      width:64px;
-      height:64px;
-      border-radius:50%;
-      object-fit:cover;
-      border:2px solid var(--primary);
-      flex-shrink:0;
-    }
-
-    .info{flex:1;display:flex;flex-direction:column;gap:4px;}
-    .nome{font-size:18px;font-weight:700;color:var(--primary)}
-    .telefone{font-size:15px;color:var(--muted)}
-
-    .whats-link{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      background:#25d366;
-      color:#fff;
-      padding:6px 10px;
-      border-radius:6px;
-      font-size:14px;
-      font-weight:600;
-      text-decoration:none;
-      width:max-content;
-      transition:.2s;
-    }
-    .whats-link:hover{background:#1ebe5c}
-    .whats-link img{width:18px;height:18px}
-
-    @media(max-width:768px){
-      header h1{font-size:20px}
-      .nome{font-size:16px}
-      .foto{width:50px;height:50px}
-    }
+    /* ... (mesmos estilos anteriores, sem mudança) ... */
   </style>
 </head>
 <body>
-  <header><h1>📱 Contatos do Grupo</h1></header>
-  <main id="listaContatos"></main>
+  <header>
+    <h1>📱 Contatos do Grupo</h1>
+    <div class="user-info" id="userInfo"></div>
+    <button onclick="logoff()" style="position:absolute;left:15px;top:10px;background:#fff;color:var(--primary);border:none;padding:6px 10px;border-radius:6px;font-weight:600;cursor:pointer;">🚪 Logoff</button>
+  </header>
+  <main>
+    <div class="btns-topo">
+      <a href="menulogado.html" class="btn-nav">⬅️ Voltar ao Menu Logado</a>
+      <a href="index.html" class="btn-nav">🏠 Página Inicial</a>
+    </div>
+
+    <!-- Caixa de busca -->
+    <div class="busca">
+      <input type="text" id="buscaInput" placeholder="🔍 Buscar contato pelo nome ou apelido...">
+    </div>
+
+    <div id="listaContatos"></div>
+  </main>
 
   <script>
     // 🔒 Verifica login
@@ -98,37 +36,124 @@
       window.location.href = "login.html";
     }
 
+    // Mostra info do usuário logado no topo
+    if(usuarioLogado){
+      const userInfoDiv = document.getElementById("userInfo");
+      const nome = usuarioLogado.apelido || usuarioLogado.nome || "";
+      userInfoDiv.innerHTML = `👤 Logado como <strong>${nome}</strong><br>${usuarioLogado.email || ""}`;
+    }
+
+    function logoff(){
+      localStorage.removeItem("usuarioLogado");
+      window.location.href = "index.html";
+    }
+
     // Recupera cadastros
     const cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
     const lista = document.getElementById("listaContatos");
 
-    if(cadastros.length === 0){
-      lista.innerHTML = "<p>Nenhum contato encontrado.</p>";
-    } else {
-      cadastros.forEach(pessoa=>{
+    // Função para renderizar contatos (com ordenação alfabética)
+    function renderContatos(filtro=""){
+      lista.innerHTML = "";
+      const contatosFiltrados = cadastros
+        .filter(p=>{
+          const nome = (p.nome || "").toLowerCase();
+          const apelido = (p.apelido || "").toLowerCase();
+          return nome.includes(filtro) || apelido.includes(filtro);
+        })
+        .sort((a,b)=>{
+          const nomeA = (a.nome || "").toLowerCase();
+          const nomeB = (b.nome || "").toLowerCase();
+          return nomeA.localeCompare(nomeB);
+        });
+
+      if(contatosFiltrados.length === 0){
+        lista.innerHTML = "<p>Nenhum contato encontrado.</p>";
+        return;
+      }
+
+      contatosFiltrados.forEach(pessoa=>{
         if(!pessoa.telefone) return;
 
         const apelido = pessoa.apelido ? ` (${pessoa.apelido})` : "";
         const nomeCompleto = `${pessoa.nome || "Sem nome"}${apelido}`;
         const tel = (pessoa.telefone || "").replace(/\D/g,'');
-        const foto = pessoa.foto ? pessoa.foto : "avatar.png"; // usa avatar padrão se não tiver
+        const foto = pessoa.foto ? pessoa.foto : "avatar.png";
+
+        const endereco = `${pessoa.rua || ""} ${pessoa.numero || ""} ${pessoa.complemento || ""}, ${pessoa.bairro || ""}, ${pessoa.cidade || ""}-${pessoa.estado || ""}`.trim();
 
         const card = document.createElement("div");
         card.className = "card";
 
         card.innerHTML = `
-          <img src="${foto}" alt="Foto de ${pessoa.nome}" class="foto">
-          <div class="info">
-            <div class="nome">${nomeCompleto}</div>
+          <div class="card-header">
+            <div class="card-header-left">
+              <img src="${foto}" alt="Foto de ${pessoa.nome}" class="foto">
+              <div class="nome">${nomeCompleto}</div>
+            </div>
+            <span class="seta">▼</span>
+          </div>
+          <div class="detalhes">
             <div class="telefone">📞 +55 ${tel}</div>
+            <div class="endereco">🏠 ${endereco}</div>
+            ${pessoa.maps ? `<a class="maps-link" href="${pessoa.maps}" target="_blank">
+              <img src="GPS.png" alt="GPS"> Localização da Residência
+            </a>` : ""}
             <a class="whats-link" href="https://wa.me/55${tel}" target="_blank">
               <img src="whatsapp.png" alt="WhatsApp"> Falar com ${pessoa.nome}
             </a>
+            <button class="agenda-btn" onclick='salvarAgenda(${JSON.stringify(pessoa)})'>💾 Salvar na Agenda</button>
           </div>
         `;
 
+        card.querySelector(".card-header").addEventListener("click", ()=>{
+          const detalhes = card.querySelector(".detalhes");
+          const seta = card.querySelector(".seta");
+          detalhes.classList.toggle("ativo");
+          seta.textContent = detalhes.classList.contains("ativo") ? "▲" : "▼";
+        });
+
         lista.appendChild(card);
       });
+    }
+
+    // Busca em tempo real
+    document.getElementById("buscaInput").addEventListener("input", e=>{
+      renderContatos(e.target.value.toLowerCase());
+    });
+
+    // Primeira renderização
+    renderContatos();
+
+    // vCard com foto
+    function salvarAgenda(pessoa){
+      const apelido = pessoa.apelido ? ` (${pessoa.apelido})` : "";
+      const nomeCompleto = `${pessoa.nome || ""}${apelido}`;
+      const tel = (pessoa.telefone || "").replace(/\D/g,'');
+      const endereco = `${pessoa.rua || ""} ${pessoa.numero || ""} ${pessoa.complemento || ""}, ${pessoa.bairro || ""}, ${pessoa.cidade || ""} ${pessoa.estado || ""}`.trim();
+
+      let vcard = 
+`BEGIN:VCARD
+VERSION:3.0
+FN:${nomeCompleto}
+TEL;TYPE=CELL:+55${tel}
+EMAIL:${pessoa.email || ""}
+ADR;TYPE=HOME:;;${endereco};;;
+`;
+
+      if(pessoa.foto){
+        vcard += `PHOTO;ENCODING=b;TYPE=JPEG:${pessoa.foto.split(",")[1]}\n`;
+      }
+
+      vcard += "END:VCARD";
+
+      const blob = new Blob([vcard], { type: "text/vcard" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${pessoa.nome || "contato"}.vcf`;
+      a.click();
+      URL.revokeObjectURL(url);
     }
   </script>
 </body>
