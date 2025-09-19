@@ -57,28 +57,11 @@
     .preview a{color:var(--primary);text-decoration:none;display:flex;align-items:center;gap:6px}
     .preview img{width:20px;height:20px}
 
-    .senha-container{
-      position:relative;
-      display:flex;
-      align-items:center;
-    }
-    .senha-container input{
-      width:100%;
-      padding-right:40px;
-    }
-    .toggle-senha{
-      position:absolute;
-      right:10px;
-      cursor:pointer;
-      font-size:18px;
-      color:var(--muted);
-    }
+    .senha-container{position:relative;display:flex;align-items:center;}
+    .senha-container input{width:100%;padding-right:40px;}
+    .toggle-senha{position:absolute;right:10px;cursor:pointer;font-size:18px;color:var(--muted);}
 
-    .obrigatorio{
-      font-size:13px;
-      color:var(--muted);
-      margin-top:4px;
-    }
+    .obrigatorio{font-size:13px;color:var(--muted);margin-top:4px;}
 
     button{border:none;font-weight:700;cursor:pointer;transition:.3s}
     .btn-main{background:var(--primary);color:#fff}
@@ -86,6 +69,14 @@
 
     .row{display:flex;gap:12px;flex-wrap:wrap}
     .row>div{flex:1;min-width:150px}
+
+    /* Novo estilo para foto */
+    .foto-container{text-align:center;margin-bottom:16px;}
+    .foto-preview{
+      width:120px;height:120px;border-radius:50%;object-fit:cover;
+      border:2px solid var(--primary);margin-bottom:8px;display:none;
+    }
+    .foto-btn{display:block;margin:0 auto;color:var(--primary);cursor:pointer;font-weight:600;}
   </style>
 </head>
 <body>
@@ -93,6 +84,14 @@
   <main class="container">
     <section class="card">
       <form id="formCadastro">
+
+        <!-- Foto do usuário -->
+        <div class="foto-container">
+          <img id="fotoPreview" class="foto-preview" alt="Foto do usuário">
+          <label for="foto" class="foto-btn">📷 Adicionar Foto</label>
+          <input type="file" id="foto" accept="image/*" capture="environment" style="display:none">
+        </div>
+
         <label for="nome">Nome:<span class="required">*</span></label>
         <input type="text" id="nome" required>
 
@@ -169,6 +168,20 @@
   </main>
 
   <script>
+    // Pré-visualização da foto
+    document.getElementById("foto").addEventListener("change", function(){
+      const file = this.files[0];
+      if(file){
+        const reader = new FileReader();
+        reader.onload = function(e){
+          const img = document.getElementById("fotoPreview");
+          img.src = e.target.result;
+          img.style.display = "block";
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+
     // CEP automático
     async function buscarCEP(){
       const cep = document.getElementById("cep").value.replace(/\D/g,'');
@@ -260,6 +273,25 @@
         return;
       }
 
+      // Convertendo foto para base64
+      let fotoBase64 = "";
+      const fotoFile = document.getElementById("foto").files[0];
+      if(fotoFile){
+        const reader = new FileReader();
+        reader.onload = function(e){
+          fotoBase64 = e.target.result;
+          salvarCadastro(fotoBase64);
+        }
+        reader.readAsDataURL(fotoFile);
+      } else {
+        salvarCadastro(fotoBase64);
+      }
+    });
+
+    function salvarCadastro(fotoBase64){
+      const cadastros = JSON.parse(localStorage.getItem("cadastrosUsuarios")) || [];
+      const email = document.getElementById("email").value.trim().toLowerCase();
+
       const novoCadastro = {
         nome: document.getElementById("nome").value.trim(),
         apelido: document.getElementById("apelido").value.trim(),
@@ -275,7 +307,8 @@
         estado: document.getElementById("estado").value.trim(),
         visita: document.getElementById("visita").value,
         maps: document.getElementById("maps").value.trim(),
-        senha: senha
+        senha: document.getElementById("senha").value,
+        foto: fotoBase64
       };
 
       cadastros.push(novoCadastro);
@@ -283,7 +316,7 @@
 
       alert("✅ Cadastro realizado com sucesso!");
       window.location.href = "index.html";
-    });
+    }
   </script>
 </body>
 </html>
